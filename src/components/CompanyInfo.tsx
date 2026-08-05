@@ -15,14 +15,14 @@ export function CompanyInfo() {
             📍 ш. Душанбе бозори Кушониён блоки 14 моғозаи 4492 (подвал)
           </p>
           <p className="text-xs text-neutral-400 mt-0.5">
-            📞 988 01 47 01 &nbsp;·&nbsp; 988 18 6161
+            📞 988 18 61 61 &nbsp;·&nbsp; 029 87 39 39 &nbsp;·&nbsp; 978 18 61 61 &nbsp;·&nbsp; 988 01 47 01
           </p>
         </div>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-6">
         <a
-          href="tel:+992988014701"
+          href="tel:+992988186161"
           className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-neutral-900 text-white text-sm font-medium active:scale-[0.97] transition-transform"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -32,7 +32,7 @@ export function CompanyInfo() {
         </a>
 
         <a
-          href="https://wa.me/992988014701"
+          href="https://wa.me/992988186161"
           target="_blank"
           rel="noopener"
           className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#25D366] text-white text-sm font-medium active:scale-[0.97] transition-transform"
