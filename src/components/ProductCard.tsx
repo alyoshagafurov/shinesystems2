@@ -15,7 +15,7 @@ interface Props {
 }
 
 export function ProductCard({ product }: Props) {
-  const { addItem, items } = useCart();
+  const { addItem, removeItem, updateQuantity, items } = useCart();
   const inCart = items.find((i) => i.id === product.id);
 
   return (
@@ -53,16 +53,36 @@ export function ProductCard({ product }: Props) {
           <span className="text-base font-bold">
             {product.price.toLocaleString("ru-RU")} с.
           </span>
-          <button
-            onClick={() => addItem(product)}
-            className={`px-4 py-2 rounded-xl text-xs font-medium transition-all active:scale-[0.95] ${
-              inCart
-                ? "bg-neutral-900 text-white"
-                : "bg-neutral-100 text-neutral-900 hover:bg-neutral-200"
-            }`}
-          >
-            {inCart ? `В корзине (${inCart.quantity})` : "В корзину"}
-          </button>
+          {inCart ? (
+            <div className="flex items-center gap-0 rounded-xl border border-neutral-200 overflow-hidden">
+              <button
+                onClick={() =>
+                  inCart.quantity <= 1
+                    ? removeItem(product.id)
+                    : updateQuantity(product.id, inCart.quantity - 1)
+                }
+                className="w-9 h-9 flex items-center justify-center text-lg font-bold text-neutral-600 hover:bg-neutral-100 active:scale-[0.9] transition-all"
+              >
+                −
+              </button>
+              <span className="w-9 h-9 flex items-center justify-center text-sm font-bold bg-neutral-900 text-white">
+                {inCart.quantity}
+              </span>
+              <button
+                onClick={() => updateQuantity(product.id, inCart.quantity + 1)}
+                className="w-9 h-9 flex items-center justify-center text-lg font-bold text-neutral-600 hover:bg-neutral-100 active:scale-[0.9] transition-all"
+              >
+                +
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => addItem(product)}
+              className="px-4 py-2 rounded-xl text-xs font-medium transition-all active:scale-[0.95] bg-neutral-100 text-neutral-900 hover:bg-neutral-200"
+            >
+              В корзину
+            </button>
+          )}
         </div>
       </div>
     </div>
