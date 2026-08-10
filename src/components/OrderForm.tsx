@@ -45,16 +45,16 @@ export function OrderForm({ onBack }: Props) {
       });
     } catch {}
 
-    let msg = `🛒 *Новый ОПТОВЫЙ заказ с сайта AUTOSHINE.TJ ОПТ*\n\n`;
+    let msg = `🛒 *AUTOSHINE.TJ ОПТ — Накладная*\n\n`;
     msg += `👤 *Клиент:* ${form.firstName} ${form.lastName}\n`;
     msg += `📞 *Телефон:* ${form.phone}\n`;
     if (form.address) msg += `📍 *Адрес:* ${form.address}\n`;
     if (form.comment) msg += `💬 *Комментарий:* ${form.comment}\n`;
-    msg += `\n📦 *Товары:*\n`;
+    msg += `\n*№ | НАИМЕНОВАНИЕ | КОЛ-ВО | ЦЕНА | СУММА*\n`;
     items.forEach((item, i) => {
-      msg += `${i + 1}. ${item.name}. ${item.quantity}шт x ${item.price}с=${item.price * item.quantity}с\n`;
+      msg += `${i + 1} | ${item.name} | ${item.quantity} | ${item.price}с | ${item.price * item.quantity}с\n`;
     });
-    msg += `\n💰 *Итого: ${totalPrice.toLocaleString("ru-RU")} сомони*`;
+    msg += `\n*ИТОГО: ${totalPrice.toLocaleString("ru-RU")} сомони*`;
 
     window.open(
       `https://wa.me/${ADMIN_WHATSAPP}?text=${encodeURIComponent(msg)}`,

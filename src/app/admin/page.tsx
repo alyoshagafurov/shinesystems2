@@ -420,10 +420,13 @@ export default function AdminPage() {
                     </div>
                   </div>
 
-                  <div className="space-y-1 mb-3">
-                    {order.items.map((item) => (
-                      <div key={item.id} className="text-xs text-neutral-600">
-                        {item.name}. {item.quantity}шт x {item.price}с={item.price * item.quantity}с
+                  <div className="mb-3">
+                    <div className="grid grid-cols-[auto_1fr_auto_auto_auto] gap-x-3 text-[10px] font-bold text-neutral-400 uppercase mb-1">
+                      <span>№</span><span>Наименование</span><span>Кол-во</span><span>Цена</span><span>Сумма</span>
+                    </div>
+                    {order.items.map((item, idx) => (
+                      <div key={item.id} className="grid grid-cols-[auto_1fr_auto_auto_auto] gap-x-3 text-xs text-neutral-600">
+                        <span>{idx + 1}</span><span>{item.name}</span><span>{item.quantity}</span><span>{item.price}с</span><span className="font-medium">{item.price * item.quantity}с</span>
                       </div>
                     ))}
                   </div>
