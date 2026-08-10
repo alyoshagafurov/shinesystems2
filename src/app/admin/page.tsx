@@ -421,12 +421,12 @@ export default function AdminPage() {
                   </div>
 
                   <div className="mb-3">
-                    <div className="grid grid-cols-[auto_1fr_auto_auto_auto] gap-x-3 text-[10px] font-bold text-neutral-400 uppercase mb-1">
-                      <span>№</span><span>Наименование</span><span>Кол-во</span><span>Цена</span><span>Сумма</span>
+                    <div className="grid grid-cols-[24px_1fr_52px_56px_64px] gap-x-2 text-[10px] font-bold text-neutral-400 uppercase mb-1">
+                      <span>№</span><span>Наименование</span><span className="text-right">Кол-во</span><span className="text-right">Цена</span><span className="text-right">Сумма</span>
                     </div>
                     {order.items.map((item, idx) => (
-                      <div key={item.id} className="grid grid-cols-[auto_1fr_auto_auto_auto] gap-x-3 text-xs text-neutral-600">
-                        <span>{idx + 1}</span><span>{item.name}</span><span>{item.quantity}</span><span>{item.price}с</span><span className="font-medium">{item.price * item.quantity}с</span>
+                      <div key={item.id} className="grid grid-cols-[24px_1fr_52px_56px_64px] gap-x-2 text-xs text-neutral-600 py-0.5">
+                        <span>{idx + 1}</span><span>{item.name}</span><span className="text-right">{item.quantity}</span><span className="text-right">{item.price}с</span><span className="text-right font-medium">{item.price * item.quantity}с</span>
                       </div>
                     ))}
                   </div>
