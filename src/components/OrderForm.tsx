@@ -45,16 +45,14 @@ export function OrderForm({ onBack }: Props) {
       });
     } catch {}
 
-    let msg = `🛒 *AUTOSHINE.TJ ОПТ — Накладная*\n\n`;
-    msg += `👤 *Клиент:* ${form.firstName} ${form.lastName}\n`;
-    msg += `📞 *Телефон:* ${form.phone}\n`;
-    if (form.address) msg += `📍 *Адрес:* ${form.address}\n`;
-    if (form.comment) msg += `💬 *Комментарий:* ${form.comment}\n`;
-    msg += `\n*№ | НАИМЕНОВАНИЕ | КОЛ-ВО | ЦЕНА | СУММА*\n`;
+    let msg = `${form.firstName} ${form.lastName}\n${form.phone}\n`;
+    if (form.address) msg += `${form.address}\n`;
+    if (form.comment) msg += `${form.comment}\n`;
+    msg += `\n`;
     items.forEach((item, i) => {
-      msg += `${i + 1} | ${item.name} | ${item.quantity} | ${item.price}с | ${item.price * item.quantity}с\n`;
+      msg += `${i + 1}. ${item.name} — ${item.quantity} x ${item.price}с = ${item.price * item.quantity}с\n`;
     });
-    msg += `\n*ИТОГО: ${totalPrice.toLocaleString("ru-RU")} сомони*`;
+    msg += `\nИтого: ${totalPrice.toLocaleString("ru-RU")} сомони`;
 
     window.open(
       `https://wa.me/${ADMIN_WHATSAPP}?text=${encodeURIComponent(msg)}`,

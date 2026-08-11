@@ -5,14 +5,16 @@ import { createContext, useContext, useState, useCallback, useEffect, ReactNode 
 export interface CartItem {
   id: string;
   name: string;
+  description: string;
   price: number;
   image: string;
+  inStock: boolean;
   quantity: number;
 }
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (product: { id: string; name: string; price: number; image: string }) => void;
+  addItem: (product: { id: string; name: string; description: string; price: number; image: string; inStock: boolean }) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
@@ -44,7 +46,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [items, loaded]);
 
   const addItem = useCallback(
-    (product: { id: string; name: string; price: number; image: string }) => {
+    (product: { id: string; name: string; description: string; price: number; image: string; inStock: boolean }) => {
       setItems((prev) => {
         const existing = prev.find((i) => i.id === product.id);
         if (existing) {

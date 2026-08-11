@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 
 interface Category { id: string; name: string; slug: string }
-interface Product { id: string; name: string; description: string; price: number; image: string; categoryId: string; category?: Category }
+interface Product { id: string; name: string; description: string; price: number; image: string; inStock: boolean; categoryId: string; category?: Category }
 interface OrderItem { id: string; name: string; price: number; quantity: number; productId: string }
 interface Order { id: string; firstName: string; lastName: string; phone: string; address: string; comment: string; total: number; status: string; items: OrderItem[]; createdAt: string }
 
@@ -167,7 +167,7 @@ export default function AdminPage() {
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-bold">Товары</h2>
               <button
-                onClick={() => setEditProduct({ name: "", description: "", price: 0, image: "", categoryId: categories[0]?.id || "" })}
+                onClick={() => setEditProduct({ name: "", description: "", price: 0, image: "", inStock: true, categoryId: categories[0]?.id || "" })}
                 className="px-4 py-2 rounded-xl bg-neutral-900 text-white text-xs font-medium"
               >
                 + Добавить товар
@@ -208,6 +208,15 @@ export default function AdminPage() {
                     ))}
                   </select>
                 </div>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={editProduct.inStock ?? true}
+                    onChange={(e) => setEditProduct({ ...editProduct, inStock: e.target.checked })}
+                    className="w-4 h-4 rounded"
+                  />
+                  <span className="text-sm">В наличии</span>
+                </label>
                 <div className="space-y-2">
                   {editProduct.image && (
                     <div className="w-20 h-20 rounded-lg overflow-hidden bg-neutral-50">
@@ -262,7 +271,7 @@ export default function AdminPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{p.name}</p>
-                    <p className="text-xs text-neutral-400">{p.category?.name} · {p.price.toLocaleString("ru-RU")} с.</p>
+                    <p className="text-xs text-neutral-400">{p.category?.name} · {p.price.toLocaleString("ru-RU")} с. · <span className={p.inStock ? "text-green-600" : "text-red-500"}>{p.inStock ? "В наличии" : "Нет"}</span></p>
                   </div>
                   <div className="flex gap-1.5">
                     <button
@@ -420,15 +429,29 @@ export default function AdminPage() {
                     </div>
                   </div>
 
-                  <div className="mb-3">
-                    <div className="grid grid-cols-[24px_1fr_52px_56px_64px] gap-x-2 text-[10px] font-bold text-neutral-400 uppercase mb-1">
-                      <span>№</span><span>Наименование</span><span className="text-right">Кол-во</span><span className="text-right">Цена</span><span className="text-right">Сумма</span>
-                    </div>
-                    {order.items.map((item, idx) => (
-                      <div key={item.id} className="grid grid-cols-[24px_1fr_52px_56px_64px] gap-x-2 text-xs text-neutral-600 py-0.5">
-                        <span>{idx + 1}</span><span>{item.name}</span><span className="text-right">{item.quantity}</span><span className="text-right">{item.price}с</span><span className="text-right font-medium">{item.price * item.quantity}с</span>
-                      </div>
-                    ))}
+                  <div className="mb-3 overflow-x-auto">
+                    <table className="w-full text-xs border-collapse">
+                      <thead>
+                        <tr className="border-b border-neutral-200">
+                          <th className="py-2 pr-2 text-left text-neutral-400 font-medium w-8">№</th>
+                          <th className="py-2 px-2 text-left text-neutral-400 font-medium">Наименование товара</th>
+                          <th className="py-2 px-2 text-center text-neutral-400 font-medium w-16">Кол-во</th>
+                          <th className="py-2 px-2 text-right text-neutral-400 font-medium w-20">Цена, сомони</th>
+                          <th className="py-2 pl-2 text-right text-neutral-400 font-medium w-20">Сумма, сомони</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {order.items.map((item, idx) => (
+                          <tr key={item.id} className="border-b border-neutral-50">
+                            <td className="py-2 pr-2 font-medium">{idx + 1}</td>
+                            <td className="py-2 px-2">{item.name}</td>
+                            <td className="py-2 px-2 text-center">{item.quantity} шт</td>
+                            <td className="py-2 px-2 text-right">{item.price.toLocaleString("ru-RU")}</td>
+                            <td className="py-2 pl-2 text-right font-medium">{(item.price * item.quantity).toLocaleString("ru-RU")}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
 
                   <div className="flex items-center justify-between pt-2 border-t border-neutral-50">

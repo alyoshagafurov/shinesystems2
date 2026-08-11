@@ -20,6 +20,7 @@ export async function POST(request: NextRequest) {
       description: body.description || "",
       price: body.price,
       image: body.image || "",
+      inStock: body.inStock ?? true,
       categoryId: body.categoryId,
     },
   });

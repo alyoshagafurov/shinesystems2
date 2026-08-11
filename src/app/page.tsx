@@ -17,6 +17,7 @@ async function getData() {
         description: p.description,
         price: p.price,
         image: p.image,
+        inStock: p.inStock,
         categoryId: p.categoryId,
       })),
     };
