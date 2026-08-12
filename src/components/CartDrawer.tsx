@@ -59,16 +59,8 @@ export function CartDrawer() {
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">{item.name}</p>
-                    {item.description && (
-                      <p className="text-[11px] text-neutral-400 truncate">{item.description}</p>
-                    )}
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-sm font-bold">{item.price.toLocaleString("ru-RU")} с.</span>
-                      <span className={`text-[10px] font-medium ${item.inStock ? "text-green-600" : "text-red-500"}`}>
-                        {item.inStock ? "В наличии" : "Нет в наличии"}
-                      </span>
-                    </div>
+                    <p className="text-sm font-medium leading-tight">{item.name}</p>
+                    <p className="text-sm font-bold mt-0.5">{item.price.toLocaleString("ru-RU")} с.</p>
 
                     <div className="flex items-center gap-2 mt-1.5">
                       <div className="flex items-center border border-neutral-200 rounded-lg">
