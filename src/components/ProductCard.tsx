@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useCart } from "./CartProvider";
+import { useFavorites } from "./FavoritesProvider";
 
 interface Product {
   id: string;
@@ -34,11 +35,13 @@ function InfoSection({ label, text }: { label: string; text: string }) {
 
 export function ProductCard({ product }: Props) {
   const { addItem, removeItem, updateQuantity, items } = useCart();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const inCart = items.find((i) => i.id === product.id);
   const [open, setOpen] = useState(false);
   const [activeImg, setActiveImg] = useState(0);
 
   const firstImage = product.images?.[0];
+  const fav = isFavorite(product.id);
 
   return (
     <>
@@ -63,6 +66,14 @@ export function ProductCard({ product }: Props) {
               </svg>
             </div>
           )}
+          <button
+            onClick={(e) => { e.stopPropagation(); toggleFavorite(product.id); }}
+            className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/80 flex items-center justify-center shadow-sm active:scale-90 transition-transform z-[1]"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill={fav ? "#ef4444" : "none"} stroke={fav ? "#ef4444" : "currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={fav ? "" : "text-neutral-400"}>
+              <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+            </svg>
+          </button>
           {!product.inStock && (
             <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
               <span className="px-3 py-1 rounded-full bg-red-500 text-white text-[10px] font-bold">Нет в наличии</span>
@@ -136,14 +147,24 @@ export function ProductCard({ product }: Props) {
             className="relative bg-white w-full sm:max-w-lg sm:mx-4 rounded-t-2xl sm:rounded-2xl overflow-hidden max-h-[92dvh] flex flex-col animate-fadeIn"
             onClick={(e) => e.stopPropagation()}
           >
-            <button
-              onClick={() => setOpen(false)}
-              className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-white/90 flex items-center justify-center shadow-sm"
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            </button>
+            <div className="absolute top-3 right-3 z-10 flex gap-2">
+              <button
+                onClick={() => toggleFavorite(product.id)}
+                className="w-9 h-9 rounded-full bg-white/90 flex items-center justify-center shadow-sm"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill={fav ? "#ef4444" : "none"} stroke={fav ? "#ef4444" : "currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={fav ? "" : "text-neutral-600"}>
+                  <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+                </svg>
+              </button>
+              <button
+                onClick={() => setOpen(false)}
+                className="w-9 h-9 rounded-full bg-white/90 flex items-center justify-center shadow-sm"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
 
             <div className="overflow-y-auto flex-1">
               {product.images.length > 0 && (
