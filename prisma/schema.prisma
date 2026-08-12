@@ -33,7 +33,7 @@ model Product {
   storage      String      @default("")
   shelfLife    String      @default("")
   price        Float
-  image        String      @default("")
+  images       String[]    @default([])
   inStock      Boolean     @default(true)
   categoryId  String
   category    Category    @relation(fields: [categoryId], references: [id])

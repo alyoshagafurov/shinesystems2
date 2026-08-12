@@ -14,7 +14,7 @@ interface Product {
   storage: string;
   shelfLife: string;
   price: number;
-  image: string;
+  images: string[];
   inStock: boolean;
 }
 
@@ -36,17 +36,20 @@ export function ProductCard({ product }: Props) {
   const { addItem, removeItem, updateQuantity, items } = useCart();
   const inCart = items.find((i) => i.id === product.id);
   const [open, setOpen] = useState(false);
+  const [activeImg, setActiveImg] = useState(0);
+
+  const firstImage = product.images?.[0];
 
   return (
     <>
       <div
         className="animate-fadeIn bg-white rounded-2xl border border-neutral-100 overflow-hidden cursor-pointer"
-        onClick={() => setOpen(true)}
+        onClick={() => { setOpen(true); setActiveImg(0); }}
       >
         <div className="aspect-square bg-neutral-50 relative overflow-hidden">
-          {product.image ? (
+          {firstImage ? (
             <img
-              src={product.image}
+              src={firstImage}
               alt={product.name}
               className="w-full h-full object-cover"
               loading="lazy"
@@ -63,6 +66,11 @@ export function ProductCard({ product }: Props) {
           {!product.inStock && (
             <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
               <span className="px-3 py-1 rounded-full bg-red-500 text-white text-[10px] font-bold">Нет в наличии</span>
+            </div>
+          )}
+          {product.images.length > 1 && (
+            <div className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded-md bg-black/50 text-white text-[10px] font-medium">
+              1/{product.images.length}
             </div>
           )}
         </div>
@@ -138,9 +146,36 @@ export function ProductCard({ product }: Props) {
             </button>
 
             <div className="overflow-y-auto flex-1">
-              {product.image && (
-                <div className="w-full aspect-[4/3] bg-neutral-50">
-                  <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+              {product.images.length > 0 && (
+                <div className="relative">
+                  <div className="w-full aspect-[4/3] bg-neutral-50 overflow-hidden">
+                    <img src={product.images[activeImg]} alt={product.name} className="w-full h-full object-cover" />
+                  </div>
+                  {product.images.length > 1 && (
+                    <>
+                      <button
+                        onClick={() => setActiveImg((prev) => (prev - 1 + product.images.length) % product.images.length)}
+                        className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 flex items-center justify-center shadow-sm"
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6" /></svg>
+                      </button>
+                      <button
+                        onClick={() => setActiveImg((prev) => (prev + 1) % product.images.length)}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 flex items-center justify-center shadow-sm"
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
+                      </button>
+                      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                        {product.images.map((_, i) => (
+                          <button
+                            key={i}
+                            onClick={() => setActiveImg(i)}
+                            className={`w-2 h-2 rounded-full transition-all ${i === activeImg ? "bg-white scale-125" : "bg-white/50"}`}
+                          />
+                        ))}
+                      </div>
+                    </>
+                  )}
                 </div>
               )}
               <div className="p-5">

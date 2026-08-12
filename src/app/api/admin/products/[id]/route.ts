@@ -21,7 +21,7 @@ export async function PUT(
       storage: body.storage,
       shelfLife: body.shelfLife,
       price: body.price,
-      image: body.image,
+      images: body.images,
       inStock: body.inStock,
       categoryId: body.categoryId,
     },

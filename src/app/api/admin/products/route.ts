@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       storage: body.storage || "",
       shelfLife: body.shelfLife || "",
       price: body.price,
-      image: body.image || "",
+      images: body.images || [],
       inStock: body.inStock ?? true,
       categoryId: body.categoryId,
     },

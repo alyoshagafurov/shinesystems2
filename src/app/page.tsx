@@ -22,7 +22,7 @@ async function getData() {
         storage: p.storage,
         shelfLife: p.shelfLife,
         price: p.price,
-        image: p.image,
+        images: p.images,
         inStock: p.inStock,
         categoryId: p.categoryId,
       })),

@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 
 interface Category { id: string; name: string; slug: string }
-interface Product { id: string; name: string; description: string; composition: string; dilution: string; application: string; precautions: string; storage: string; shelfLife: string; price: number; image: string; inStock: boolean; categoryId: string; category?: Category }
+interface Product { id: string; name: string; description: string; composition: string; dilution: string; application: string; precautions: string; storage: string; shelfLife: string; price: number; images: string[]; inStock: boolean; categoryId: string; category?: Category }
 interface OrderItem { id: string; name: string; price: number; quantity: number; productId: string }
 interface Order { id: string; firstName: string; lastName: string; phone: string; address: string; comment: string; total: number; status: string; items: OrderItem[]; createdAt: string }
 
@@ -122,7 +122,7 @@ export default function AdminPage() {
     <div className="min-h-dvh bg-neutral-50">
       <header className="bg-white border-b border-neutral-100 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
-          <span className="text-sm font-bold">AUTOSHINE.TJ ОПТ</span>
+          <span className="text-sm font-bold">AUTOSHINE.TJ</span>
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="p-2 -mr-2"
@@ -167,7 +167,7 @@ export default function AdminPage() {
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-bold">Товары</h2>
               <button
-                onClick={() => setEditProduct({ name: "", description: "", composition: "", dilution: "", application: "", precautions: "", storage: "", shelfLife: "", price: 0, image: "", inStock: true, categoryId: categories[0]?.id || "" })}
+                onClick={() => setEditProduct({ name: "", description: "", composition: "", dilution: "", application: "", precautions: "", storage: "", shelfLife: "", price: 0, images: [], inStock: true, categoryId: categories[0]?.id || "" })}
                 className="px-4 py-2 rounded-xl bg-neutral-900 text-white text-xs font-medium"
               >
                 + Добавить товар
@@ -256,9 +256,23 @@ export default function AdminPage() {
                   <span className="text-sm">В наличии</span>
                 </label>
                 <div className="space-y-2">
-                  {editProduct.image && (
-                    <div className="w-20 h-20 rounded-lg overflow-hidden bg-neutral-50">
-                      <img src={editProduct.image} alt="" className="w-full h-full object-cover" />
+                  {(editProduct.images?.length ?? 0) > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {editProduct.images!.map((url, i) => (
+                        <div key={i} className="relative w-20 h-20 rounded-lg overflow-hidden bg-neutral-50 group">
+                          <img src={url} alt="" className="w-full h-full object-cover" />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const imgs = editProduct.images!.filter((_, j) => j !== i);
+                              setEditProduct({ ...editProduct, images: imgs });
+                            }}
+                            className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
                     </div>
                   )}
                   <label className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 border-dashed border-neutral-200 cursor-pointer hover:border-neutral-400 transition-colors ${uploading ? "opacity-50 pointer-events-none" : ""}`}>
@@ -268,23 +282,29 @@ export default function AdminPage() {
                       <line x1="12" y1="3" x2="12" y2="15" />
                     </svg>
                     <span className="text-xs text-neutral-500">
-                      {uploading ? "Загрузка..." : "Выбрать фото (до 5 МБ)"}
+                      {uploading ? "Загрузка..." : "Добавить фото (до 5 МБ)"}
                     </span>
                     <input
                       type="file"
                       accept="image/jpeg,image/png,image/webp"
+                      multiple
                       className="hidden"
                       onChange={async (e) => {
-                        const file = e.target.files?.[0];
-                        if (!file) return;
+                        const files = e.target.files;
+                        if (!files || files.length === 0) return;
                         setUploading(true);
-                        const fd = new FormData();
-                        fd.append("file", file);
-                        const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
-                        const data = await res.json();
+                        const currentImages = editProduct.images || [];
+                        const newImages = [...currentImages];
+                        for (let k = 0; k < files.length; k++) {
+                          const fd = new FormData();
+                          fd.append("file", files[k]);
+                          const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+                          const data = await res.json();
+                          if (data.url) newImages.push(data.url);
+                          else alert(data.error || "Ошибка загрузки");
+                        }
                         setUploading(false);
-                        if (data.url) setEditProduct({ ...editProduct, image: data.url });
-                        else alert(data.error || "Ошибка загрузки");
+                        setEditProduct({ ...editProduct, images: newImages });
                         e.target.value = "";
                       }}
                     />
@@ -305,7 +325,7 @@ export default function AdminPage() {
               {products.map((p) => (
                 <div key={p.id} className="bg-white rounded-xl border border-neutral-100 p-4 flex items-center gap-4">
                   <div className="w-12 h-12 rounded-lg bg-neutral-50 shrink-0 overflow-hidden">
-                    {p.image && <img src={p.image} alt="" className="w-full h-full object-cover" />}
+                    {p.images?.[0] && <img src={p.images[0]} alt="" className="w-full h-full object-cover" />}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{p.name}</p>

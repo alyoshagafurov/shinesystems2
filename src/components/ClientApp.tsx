@@ -23,7 +23,7 @@ interface Product {
   storage: string;
   shelfLife: string;
   price: number;
-  image: string;
+  images: string[];
   inStock: boolean;
   categoryId: string;
 }
@@ -46,7 +46,7 @@ export function ClientApp({ categories, products }: Props) {
       <footer className="border-t border-neutral-100 bg-neutral-50">
         <div className="max-w-5xl mx-auto px-4 py-8 text-center">
           <p className="text-xs text-neutral-400">
-            AUTOSHINE.TJ ОПТ — Оптовый Детейлинг Маркет
+            AUTOSHINE.TJ — Детейлинг Маркет
           </p>
           <p className="text-xs text-neutral-300 mt-1">
             ш. Душанбе бозори Кушониён блоки 14 моғозаи 4492
