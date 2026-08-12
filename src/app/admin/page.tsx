@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 
 interface Category { id: string; name: string; slug: string }
-interface Product { id: string; name: string; description: string; price: number; image: string; inStock: boolean; categoryId: string; category?: Category }
+interface Product { id: string; name: string; description: string; composition: string; dilution: string; application: string; precautions: string; storage: string; shelfLife: string; price: number; image: string; inStock: boolean; categoryId: string; category?: Category }
 interface OrderItem { id: string; name: string; price: number; quantity: number; productId: string }
 interface Order { id: string; firstName: string; lastName: string; phone: string; address: string; comment: string; total: number; status: string; items: OrderItem[]; createdAt: string }
 
@@ -167,7 +167,7 @@ export default function AdminPage() {
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-bold">Товары</h2>
               <button
-                onClick={() => setEditProduct({ name: "", description: "", price: 0, image: "", inStock: true, categoryId: categories[0]?.id || "" })}
+                onClick={() => setEditProduct({ name: "", description: "", composition: "", dilution: "", application: "", precautions: "", storage: "", shelfLife: "", price: 0, image: "", inStock: true, categoryId: categories[0]?.id || "" })}
                 className="px-4 py-2 rounded-xl bg-neutral-900 text-white text-xs font-medium"
               >
                 + Добавить товар
@@ -189,6 +189,44 @@ export default function AdminPage() {
                   onChange={(e) => setEditProduct({ ...editProduct, description: e.target.value })}
                   className="w-full px-4 py-2.5 rounded-xl bg-neutral-50 text-sm border-0 resize-none"
                   rows={2}
+                />
+                <input
+                  placeholder="Состав"
+                  value={editProduct.composition || ""}
+                  onChange={(e) => setEditProduct({ ...editProduct, composition: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-xl bg-neutral-50 text-sm border-0"
+                />
+                <input
+                  placeholder="Разбавление"
+                  value={editProduct.dilution || ""}
+                  onChange={(e) => setEditProduct({ ...editProduct, dilution: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-xl bg-neutral-50 text-sm border-0"
+                />
+                <textarea
+                  placeholder="Применение"
+                  value={editProduct.application || ""}
+                  onChange={(e) => setEditProduct({ ...editProduct, application: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-xl bg-neutral-50 text-sm border-0 resize-none"
+                  rows={2}
+                />
+                <textarea
+                  placeholder="Меры предосторожности"
+                  value={editProduct.precautions || ""}
+                  onChange={(e) => setEditProduct({ ...editProduct, precautions: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-xl bg-neutral-50 text-sm border-0 resize-none"
+                  rows={2}
+                />
+                <input
+                  placeholder="Условия хранения"
+                  value={editProduct.storage || ""}
+                  onChange={(e) => setEditProduct({ ...editProduct, storage: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-xl bg-neutral-50 text-sm border-0"
+                />
+                <input
+                  placeholder="Срок годности"
+                  value={editProduct.shelfLife || ""}
+                  onChange={(e) => setEditProduct({ ...editProduct, shelfLife: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-xl bg-neutral-50 text-sm border-0"
                 />
                 <div className="grid grid-cols-2 gap-3">
                   <input

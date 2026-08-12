@@ -14,6 +14,12 @@ export async function PUT(
     data: {
       name: body.name,
       description: body.description,
+      composition: body.composition,
+      dilution: body.dilution,
+      application: body.application,
+      precautions: body.precautions,
+      storage: body.storage,
+      shelfLife: body.shelfLife,
       price: body.price,
       image: body.image,
       inStock: body.inStock,

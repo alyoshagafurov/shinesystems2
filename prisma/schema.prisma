@@ -25,10 +25,16 @@ model Category {
 model Product {
   id          String      @id @default(cuid())
   name        String
-  description String      @default("")
-  price       Float
-  image       String      @default("")
-  inStock     Boolean     @default(true)
+  description  String      @default("")
+  composition  String      @default("")
+  dilution     String      @default("")
+  application  String      @default("")
+  precautions  String      @default("")
+  storage      String      @default("")
+  shelfLife    String      @default("")
+  price        Float
+  image        String      @default("")
+  inStock      Boolean     @default(true)
   categoryId  String
   category    Category    @relation(fields: [categoryId], references: [id])
   createdAt   DateTime    @default(now())

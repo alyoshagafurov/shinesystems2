@@ -15,6 +15,12 @@ interface Product {
   id: string;
   name: string;
   description: string;
+  composition: string;
+  dilution: string;
+  application: string;
+  precautions: string;
+  storage: string;
+  shelfLife: string;
   price: number;
   image: string;
   inStock: boolean;
