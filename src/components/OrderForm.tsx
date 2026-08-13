@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useCart } from "./CartProvider";
 
-const ADMIN_WHATSAPP = "992988186161";
+const ADMIN_WHATSAPP = "992029873939";
 
 interface Props {
   onBack: () => void;
