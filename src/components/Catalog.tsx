@@ -98,11 +98,15 @@ export function Catalog({ categories, products }: Props) {
     }
     if (search.trim()) {
       const q = search.toLowerCase().trim();
-      result = result.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.description.toLowerCase().includes(q)
-      );
+      const terms = q.split(/\s+/);
+      result = result.filter((p) => {
+        const text = [
+          p.name, p.description, p.composition, p.dilution,
+          p.application, p.precautions, p.storage, p.shelfLife,
+          String(p.price),
+        ].join(" ").toLowerCase();
+        return terms.every((t) => text.includes(t));
+      });
     }
     return result;
   }, [filteredByCategory, search, showFavOnly, isFavorite]);
