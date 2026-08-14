@@ -7,7 +7,10 @@ export function Header() {
   const { totalItems, setIsOpen } = useCart();
   const { totalFavorites, showFavOnly, setShowFavOnly } = useFavorites();
 
-  const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
+  const goHome = () => {
+    window.dispatchEvent(new CustomEvent("autoshine-go-home"));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-neutral-100">
@@ -20,7 +23,7 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-1">
-          <button onClick={scrollToTop} className="p-2" aria-label="Главная">
+          <button onClick={goHome} className="p-2" aria-label="Главная">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-400">
               <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
               <polyline points="9 22 9 12 15 12 15 22" />

@@ -28,7 +28,7 @@ export function SearchBar({ value, onChange }: Props) {
             type="text"
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            placeholder="Поиск товаров..."
+            placeholder="Поиск товаров и категорий..."
             className="w-full pl-11 pr-4 py-3 rounded-xl bg-neutral-50 text-sm placeholder:text-neutral-400 border-0"
           />
           {value && (
