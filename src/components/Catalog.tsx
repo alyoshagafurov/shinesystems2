@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { SearchBar } from "./SearchBar";
 import { CategoryFilter } from "./CategoryFilter";
 import { ProductCard } from "./ProductCard";
@@ -10,6 +10,7 @@ interface Category {
   id: string;
   name: string;
   slug: string;
+  parentId: string | null;
 }
 
 interface Product {
@@ -33,19 +34,42 @@ interface Props {
   products: Product[];
 }
 
+function getDescendantIds(categories: Category[], parentId: string): Set<string> {
+  const ids = new Set<string>();
+  const queue = [parentId];
+  while (queue.length > 0) {
+    const pid = queue.shift()!;
+    for (const c of categories) {
+      if (c.parentId === pid && !ids.has(c.id)) {
+        ids.add(c.id);
+        queue.push(c.id);
+      }
+    }
+  }
+  return ids;
+}
+
 export function Catalog({ categories, products }: Props) {
   const [search, setSearch] = useState("");
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const [showFavOnly, setShowFavOnly] = useState(false);
-  const { isFavorite, totalFavorites } = useFavorites();
+  const [categoryPath, setCategoryPath] = useState<string[]>([]);
+  const { isFavorite, showFavOnly } = useFavorites();
+
+  const activeCategory = categoryPath.length > 0 ? categoryPath[categoryPath.length - 1] : null;
+
+  const filteredByCategory = useMemo(() => {
+    if (!activeCategory) return products;
+    const hasDirectProducts = products.some((p) => p.categoryId === activeCategory);
+    const descendantIds = getDescendantIds(categories, activeCategory);
+    if (hasDirectProducts || descendantIds.size === 0) {
+      return products.filter((p) => p.categoryId === activeCategory || descendantIds.has(p.categoryId));
+    }
+    return products.filter((p) => descendantIds.has(p.categoryId));
+  }, [products, categories, activeCategory]);
 
   const filtered = useMemo(() => {
-    let result = products;
+    let result = filteredByCategory;
     if (showFavOnly) {
       result = result.filter((p) => isFavorite(p.id));
-    }
-    if (activeCategory) {
-      result = result.filter((p) => p.categoryId === activeCategory);
     }
     if (search.trim()) {
       const q = search.toLowerCase().trim();
@@ -56,30 +80,16 @@ export function Catalog({ categories, products }: Props) {
       );
     }
     return result;
-  }, [products, activeCategory, search, showFavOnly, isFavorite]);
+  }, [filteredByCategory, search, showFavOnly, isFavorite]);
+
+  const handleNavigate = useCallback((path: string[]) => {
+    setCategoryPath(path);
+  }, []);
 
   return (
     <>
       <SearchBar value={search} onChange={setSearch} />
-      <CategoryFilter categories={categories} active={activeCategory} onSelect={setActiveCategory} />
-
-      {totalFavorites > 0 && (
-        <div className="max-w-5xl mx-auto px-4 -mt-1 mb-2">
-          <button
-            onClick={() => setShowFavOnly(!showFavOnly)}
-            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-medium transition-all ${
-              showFavOnly
-                ? "bg-red-50 text-red-500 border border-red-200"
-                : "bg-neutral-50 text-neutral-500 border border-neutral-200 hover:bg-neutral-100"
-            }`}
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill={showFavOnly ? "#ef4444" : "none"} stroke={showFavOnly ? "#ef4444" : "currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
-            </svg>
-            Избранное ({totalFavorites})
-          </button>
-        </div>
-      )}
+      <CategoryFilter categories={categories} activePath={categoryPath} onNavigate={handleNavigate} />
 
       <section className="max-w-5xl mx-auto px-4 py-6">
         {filtered.length === 0 ? (

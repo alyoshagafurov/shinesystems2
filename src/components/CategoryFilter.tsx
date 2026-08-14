@@ -1,68 +1,93 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo } from "react";
 
 interface Category {
   id: string;
   name: string;
   slug: string;
+  parentId: string | null;
 }
 
 interface Props {
   categories: Category[];
-  active: string | null;
-  onSelect: (id: string | null) => void;
+  activePath: string[];
+  onNavigate: (path: string[]) => void;
 }
 
-export function CategoryFilter({ categories, active, onSelect }: Props) {
-  const [open, setOpen] = useState(false);
-  const activeName = categories.find((c) => c.id === active)?.name || "Все категории";
+export function CategoryFilter({ categories, activePath, onNavigate }: Props) {
+  const currentParentId = activePath.length > 0 ? activePath[activePath.length - 1] : null;
+
+  const children = useMemo(
+    () => categories.filter((c) => c.parentId === currentParentId),
+    [categories, currentParentId]
+  );
+
+  const breadcrumb = useMemo(() => {
+    const trail: Category[] = [];
+    for (const id of activePath) {
+      const cat = categories.find((c) => c.id === id);
+      if (cat) trail.push(cat);
+    }
+    return trail;
+  }, [categories, activePath]);
+
+  if (children.length === 0 && activePath.length === 0) return null;
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-3">
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-neutral-100 text-sm font-medium"
-      >
-        <span className="truncate">{active ? activeName : "Все категории"}</span>
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className={`shrink-0 ml-2 transition-transform ${open ? "rotate-180" : ""}`}
-        >
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
-      </button>
-
-      {open && (
-        <div className="mt-2 bg-white rounded-xl border border-neutral-100 shadow-lg max-h-80 overflow-y-auto">
+      {activePath.length > 0 && (
+        <div className="flex items-center gap-1 mb-2 flex-wrap text-xs">
           <button
-            onClick={() => { onSelect(null); setOpen(false); }}
-            className={`w-full text-left px-4 py-3 text-sm font-medium border-b border-neutral-50 ${
-              active === null ? "bg-neutral-900 text-white" : "text-neutral-700 active:bg-neutral-50"
-            }`}
+            onClick={() => onNavigate([])}
+            className="text-neutral-400 hover:text-neutral-600"
           >
-            Все категории
+            Все
           </button>
-          {categories.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => { onSelect(cat.id === active ? null : cat.id); setOpen(false); }}
-              className={`w-full text-left px-4 py-3 text-sm border-b border-neutral-50 last:border-0 ${
-                active === cat.id
-                  ? "bg-neutral-900 text-white font-medium"
-                  : "text-neutral-700 active:bg-neutral-50"
-              }`}
-            >
-              {cat.name}
-            </button>
+          {breadcrumb.map((cat, i) => (
+            <span key={cat.id} className="flex items-center gap-1">
+              <span className="text-neutral-300">/</span>
+              <button
+                onClick={() => onNavigate(activePath.slice(0, i + 1))}
+                className={i === breadcrumb.length - 1 ? "font-medium text-neutral-900" : "text-neutral-400 hover:text-neutral-600"}
+              >
+                {cat.name}
+              </button>
+            </span>
           ))}
+        </div>
+      )}
+
+      {children.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {activePath.length > 0 && (
+            <button
+              onClick={() => onNavigate(activePath.slice(0, -1))}
+              className="flex items-center gap-1 px-3 py-2 rounded-xl bg-neutral-100 text-sm font-medium text-neutral-500 hover:bg-neutral-200 transition-colors"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+              Назад
+            </button>
+          )}
+          {children.map((cat) => {
+            const hasChildren = categories.some((c) => c.parentId === cat.id);
+            return (
+              <button
+                key={cat.id}
+                onClick={() => onNavigate([...activePath, cat.id])}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-neutral-100 text-sm font-medium text-neutral-700 hover:bg-neutral-200 transition-colors"
+              >
+                {cat.name}
+                {hasChildren && (
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-400">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                )}
+              </button>
+            );
+          })}
         </div>
       )}
     </div>

@@ -7,6 +7,8 @@ interface FavoritesContextType {
   toggleFavorite: (id: string) => void;
   isFavorite: (id: string) => boolean;
   totalFavorites: number;
+  showFavOnly: boolean;
+  setShowFavOnly: (v: boolean) => void;
 }
 
 const KEY = "autoshine-favorites";
@@ -15,6 +17,7 @@ const FavoritesContext = createContext<FavoritesContextType | null>(null);
 export function FavoritesProvider({ children }: { children: ReactNode }) {
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [loaded, setLoaded] = useState(false);
+  const [showFavOnly, setShowFavOnly] = useState(false);
 
   useEffect(() => {
     try {
@@ -41,7 +44,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
   const isFavorite = useCallback((id: string) => favorites.has(id), [favorites]);
 
   return (
-    <FavoritesContext.Provider value={{ favorites, toggleFavorite, isFavorite, totalFavorites: favorites.size }}>
+    <FavoritesContext.Provider value={{ favorites, toggleFavorite, isFavorite, totalFavorites: favorites.size, showFavOnly, setShowFavOnly }}>
       {children}
     </FavoritesContext.Provider>
   );

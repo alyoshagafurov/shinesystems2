@@ -15,11 +15,16 @@ model Admin {
 }
 
 model Category {
-  id       String    @id @default(cuid())
+  id       String     @id @default(cuid())
   name     String
-  slug     String    @unique
-  order    Int       @default(0)
+  slug     String     @unique
+  order    Int        @default(0)
+  parentId String?
+  parent   Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryTree")
   products Product[]
+
+  @@index([parentId])
 }
 
 model Product {

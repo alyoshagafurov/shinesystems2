@@ -10,7 +10,7 @@ async function getData() {
       prisma.product.findMany({ orderBy: { createdAt: "desc" } }),
     ]);
     return {
-      categories: categories.map((c) => ({ id: c.id, name: c.name, slug: c.slug })),
+      categories: categories.map((c) => ({ id: c.id, name: c.name, slug: c.slug, parentId: c.parentId })),
       products: products.map((p) => ({
         id: p.id,
         name: p.name,
