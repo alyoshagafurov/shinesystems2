@@ -92,7 +92,7 @@ export function Catalog({ categories, products }: Props) {
   }, [products, categories, activeCategory]);
 
   const filtered = useMemo(() => {
-    let result = filteredByCategory;
+    let result = search.trim() ? products : filteredByCategory;
     if (showFavOnly) {
       result = result.filter((p) => isFavorite(p.id));
     }
@@ -109,7 +109,7 @@ export function Catalog({ categories, products }: Props) {
       });
     }
     return result;
-  }, [filteredByCategory, search, showFavOnly, isFavorite]);
+  }, [products, filteredByCategory, search, showFavOnly, isFavorite]);
 
   const handleNavigate = useCallback((path: string[]) => {
     setCategoryPath(path);
