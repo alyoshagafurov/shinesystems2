@@ -7,7 +7,7 @@ async function getData() {
     const { prisma } = await import("@/lib/prisma");
     const [categories, products] = await Promise.all([
       prisma.category.findMany({ orderBy: { order: "asc" } }),
-      prisma.product.findMany({ orderBy: { createdAt: "desc" } }),
+      prisma.product.findMany({ orderBy: { order: "asc" } }),
     ]);
     return {
       categories: categories.map((c) => ({ id: c.id, name: c.name, slug: c.slug, parentId: c.parentId })),

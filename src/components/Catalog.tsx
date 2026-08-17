@@ -49,16 +49,6 @@ function getDescendantIds(categories: Category[], parentId: string): Set<string>
   return ids;
 }
 
-function getPathToCategory(categories: Category[], catId: string): string[] {
-  const path: string[] = [];
-  let current = categories.find((c) => c.id === catId);
-  while (current) {
-    path.unshift(current.id);
-    current = current.parentId ? categories.find((c) => c.id === current!.parentId) : undefined;
-  }
-  return path;
-}
-
 export function Catalog({ categories, products }: Props) {
   const [search, setSearch] = useState("");
   const [categoryPath, setCategoryPath] = useState<string[]>([]);
@@ -74,12 +64,6 @@ export function Catalog({ categories, products }: Props) {
   }, []);
 
   const activeCategory = categoryPath.length > 0 ? categoryPath[categoryPath.length - 1] : null;
-
-  const matchedCategories = useMemo(() => {
-    if (!search.trim()) return [];
-    const q = search.toLowerCase().trim();
-    return categories.filter((c) => c.name.toLowerCase().includes(q));
-  }, [categories, search]);
 
   const filteredByCategory = useMemo(() => {
     if (!activeCategory) return products;
@@ -115,45 +99,10 @@ export function Catalog({ categories, products }: Props) {
     setCategoryPath(path);
   }, []);
 
-  const navigateToCategory = useCallback((catId: string) => {
-    const path = getPathToCategory(categories, catId);
-    setCategoryPath(path);
-    setSearch("");
-  }, [categories]);
-
-  const getCategoryBreadcrumb = useCallback((cat: Category): string => {
-    const parts: string[] = [cat.name];
-    let current = cat;
-    while (current.parentId) {
-      const parent = categories.find((c) => c.id === current.parentId);
-      if (!parent) break;
-      parts.unshift(parent.name);
-      current = parent;
-    }
-    return parts.join(" → ");
-  }, [categories]);
-
   return (
     <>
       <SearchBar value={search} onChange={setSearch} />
       <CategoryFilter categories={categories} activePath={categoryPath} onNavigate={handleNavigate} />
-
-      {matchedCategories.length > 0 && (
-        <div className="max-w-5xl mx-auto px-4 pb-2">
-          <p className="text-xs text-neutral-400 mb-2">Категории по запросу:</p>
-          <div className="flex flex-wrap gap-2">
-            {matchedCategories.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => navigateToCategory(cat.id)}
-                className="px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600 text-xs font-medium hover:bg-blue-100 transition-colors"
-              >
-                {getCategoryBreadcrumb(cat)}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
 
       <section className="max-w-5xl mx-auto px-4 py-6">
         {filtered.length === 0 ? (

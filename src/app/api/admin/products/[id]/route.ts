@@ -23,6 +23,7 @@ export async function PUT(
       price: body.price,
       images: body.images,
       inStock: body.inStock,
+      order: body.order ?? undefined,
       categoryId: body.categoryId,
     },
   });

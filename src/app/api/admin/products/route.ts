@@ -6,7 +6,7 @@ export async function GET() {
   if (!(await isAdmin())) return Response.json({ error: "Unauthorized" }, { status: 401 });
   const products = await prisma.product.findMany({
     include: { category: true },
-    orderBy: { createdAt: "desc" },
+    orderBy: { order: "asc" },
   });
   return Response.json(products);
 }
