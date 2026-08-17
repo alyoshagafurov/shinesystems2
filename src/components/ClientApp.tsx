@@ -42,8 +42,8 @@ export function ClientApp({ categories: initialCategories, products: initialProd
 
   useEffect(() => {
     Promise.all([
-      fetch("/api/categories").then((r) => r.json()),
-      fetch("/api/products").then((r) => r.json()),
+      fetch("/api/categories", { cache: "no-store" }).then((r) => r.json()),
+      fetch("/api/products", { cache: "no-store" }).then((r) => r.json()),
     ]).then(([cats, prods]) => {
       setCategories(cats);
       setProducts(prods);

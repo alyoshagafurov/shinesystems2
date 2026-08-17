@@ -1,5 +1,8 @@
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+
 export async function GET() {
   const products = await prisma.product.findMany({ orderBy: { order: "asc" } });
   return Response.json(
@@ -17,6 +20,7 @@ export async function GET() {
       images: p.images,
       inStock: p.inStock,
       categoryId: p.categoryId,
-    }))
+    })),
+    { headers: { "Cache-Control": "no-store, no-cache, must-revalidate" } }
   );
 }

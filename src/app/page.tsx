@@ -1,6 +1,7 @@
 import { ClientApp } from "@/components/ClientApp";
 
 export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
 
 async function getData() {
   try {
