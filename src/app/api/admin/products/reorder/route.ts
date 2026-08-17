@@ -1,5 +1,6 @@
 import { isAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 export async function POST(req: Request) {
   if (!(await isAdmin())) return new Response("Unauthorized", { status: 401 });
@@ -9,5 +10,6 @@ export async function POST(req: Request) {
   await prisma.$transaction(
     body.ids.map((id, i) => prisma.product.update({ where: { id }, data: { order: i } }))
   );
+  revalidatePath("/");
   return Response.json({ ok: true });
 }

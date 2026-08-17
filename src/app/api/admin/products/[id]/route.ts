@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { isAdmin } from "@/lib/auth";
 import { NextRequest } from "next/server";
+import { revalidatePath } from "next/cache";
 
 export async function PUT(
   request: NextRequest,
@@ -27,6 +28,7 @@ export async function PUT(
       categoryId: body.categoryId,
     },
   });
+  revalidatePath("/");
   return Response.json(product);
 }
 
@@ -37,5 +39,6 @@ export async function DELETE(
   if (!(await isAdmin())) return Response.json({ error: "Unauthorized" }, { status: 401 });
   const { id } = await params;
   await prisma.product.delete({ where: { id } });
+  revalidatePath("/");
   return Response.json({ ok: true });
 }

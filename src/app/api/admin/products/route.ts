@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { isAdmin } from "@/lib/auth";
 import { NextRequest } from "next/server";
+import { revalidatePath } from "next/cache";
 
 export async function GET() {
   if (!(await isAdmin())) return Response.json({ error: "Unauthorized" }, { status: 401 });
@@ -30,5 +31,6 @@ export async function POST(request: NextRequest) {
       categoryId: body.categoryId,
     },
   });
+  revalidatePath("/");
   return Response.json(product);
 }
