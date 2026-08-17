@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { CartProvider } from "./CartProvider";
 import { FavoritesProvider } from "./FavoritesProvider";
 import { Header } from "./Header";
@@ -35,7 +36,20 @@ interface Props {
   products: Product[];
 }
 
-export function ClientApp({ categories, products }: Props) {
+export function ClientApp({ categories: initialCategories, products: initialProducts }: Props) {
+  const [categories, setCategories] = useState(initialCategories);
+  const [products, setProducts] = useState(initialProducts);
+
+  useEffect(() => {
+    Promise.all([
+      fetch("/api/categories").then((r) => r.json()),
+      fetch("/api/products").then((r) => r.json()),
+    ]).then(([cats, prods]) => {
+      setCategories(cats);
+      setProducts(prods);
+    });
+  }, []);
+
   return (
     <FavoritesProvider>
       <CartProvider>
