@@ -54,7 +54,7 @@ export function ProductCard({ product }: Props) {
             <img
               src={firstImage}
               alt={product.name}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
               loading="lazy"
             />
           ) : (
@@ -170,7 +170,7 @@ export function ProductCard({ product }: Props) {
               {product.images.length > 0 && (
                 <div className="relative">
                   <div className="w-full aspect-[4/3] bg-neutral-50 overflow-hidden">
-                    <img src={product.images[activeImg]} alt={product.name} className="w-full h-full object-cover" />
+                    <img src={product.images[activeImg]} alt={product.name} className="w-full h-full object-contain" />
                   </div>
                   {product.images.length > 1 && (
                     <>
