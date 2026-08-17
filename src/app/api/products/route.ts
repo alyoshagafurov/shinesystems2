@@ -20,6 +20,7 @@ export async function GET() {
       images: p.images,
       inStock: p.inStock,
       categoryId: p.categoryId,
+      order: p.order,
     })),
     { headers: { "Cache-Control": "no-store, no-cache, must-revalidate" } }
   );

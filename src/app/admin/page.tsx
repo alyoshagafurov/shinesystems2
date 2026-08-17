@@ -113,14 +113,19 @@ export default function AdminPage() {
 
   const saveProductOrder = async () => {
     setSavingOrder(true);
-    await fetch("/api/admin/products/reorder", {
+    const res = await fetch("/api/admin/products/reorder", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids: products.map((p) => p.id) }),
     });
+    const data = await res.json();
     setSavingOrder(false);
-    setOrderChanged(false);
-    alert("Порядок сохранён!");
+    if (res.ok) {
+      setOrderChanged(false);
+      alert("Порядок сохранён! Обновлено: " + data.updated);
+    } else {
+      alert("Ошибка: " + (data.error || "Неизвестная ошибка"));
+    }
   };
 
   const saveOrder = async () => {
