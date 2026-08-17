@@ -25,6 +25,8 @@ export default function AdminPage() {
   const [newCatParentId, setNewCatParentId] = useState<string>("");
   const [editCat, setEditCat] = useState<Category | null>(null);
   const [editCatName, setEditCatName] = useState("");
+  const [orderChanged, setOrderChanged] = useState(false);
+  const [savingOrder, setSavingOrder] = useState(false);
   const dragItem = useRef<number | null>(null);
   const dragOverItem = useRef<number | null>(null);
 
@@ -89,32 +91,36 @@ export default function AdminPage() {
 
   const handleDragStart = (idx: number) => { dragItem.current = idx; };
   const handleDragOver = (e: React.DragEvent, idx: number) => { e.preventDefault(); dragOverItem.current = idx; };
-  const handleDrop = async () => {
+  const handleDrop = () => {
     if (dragItem.current === null || dragOverItem.current === null || dragItem.current === dragOverItem.current) return;
     const reordered = [...products];
     const [moved] = reordered.splice(dragItem.current, 1);
     reordered.splice(dragOverItem.current, 0, moved);
     setProducts(reordered);
+    setOrderChanged(true);
     dragItem.current = null;
     dragOverItem.current = null;
-    await fetch("/api/admin/products/reorder", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ids: reordered.map((p) => p.id) }),
-    });
   };
 
-  const moveProduct = async (idx: number, dir: -1 | 1) => {
+  const moveProduct = (idx: number, dir: -1 | 1) => {
     const newIdx = idx + dir;
     if (newIdx < 0 || newIdx >= products.length) return;
     const reordered = [...products];
     [reordered[idx], reordered[newIdx]] = [reordered[newIdx], reordered[idx]];
     setProducts(reordered);
+    setOrderChanged(true);
+  };
+
+  const saveProductOrder = async () => {
+    setSavingOrder(true);
     await fetch("/api/admin/products/reorder", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ids: reordered.map((p) => p.id) }),
+      body: JSON.stringify({ ids: products.map((p) => p.id) }),
     });
+    setSavingOrder(false);
+    setOrderChanged(false);
+    alert("Порядок сохранён!");
   };
 
   const saveOrder = async () => {
@@ -292,7 +298,14 @@ export default function AdminPage() {
           <>
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-bold">Товары</h2>
-              <button onClick={startNew} className="px-4 py-2 rounded-xl bg-neutral-900 text-white text-xs font-medium">+ Добавить товар</button>
+              <div className="flex gap-2">
+                {orderChanged && (
+                  <button onClick={saveProductOrder} disabled={savingOrder} className="px-4 py-2 rounded-xl bg-green-600 text-white text-xs font-medium disabled:opacity-50">
+                    {savingOrder ? "Сохраняем..." : "Сохранить порядок"}
+                  </button>
+                )}
+                <button onClick={startNew} className="px-4 py-2 rounded-xl bg-neutral-900 text-white text-xs font-medium">+ Добавить товар</button>
+              </div>
             </div>
             {editProductId === "new" && renderEditForm()}
             <div className="space-y-2">
