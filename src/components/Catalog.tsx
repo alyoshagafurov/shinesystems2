@@ -83,14 +83,28 @@ export function Catalog({ categories, products }: Props) {
     if (search.trim()) {
       const q = search.toLowerCase().trim();
       const terms = q.split(/\s+/);
-      result = result.filter((p) => {
-        const text = [
-          p.name, p.description, p.composition, p.dilution,
-          p.application, p.precautions, p.storage, p.shelfLife,
-          String(p.price),
-        ].join(" ").toLowerCase();
-        return terms.every((t) => text.includes(t));
-      });
+      result = result
+        .filter((p) => {
+          const text = [
+            p.name, p.description, p.composition, p.dilution,
+            p.application, p.precautions, p.storage, p.shelfLife,
+            String(p.price),
+          ].join(" ").toLowerCase();
+          return terms.every((t) => text.includes(t));
+        })
+        .sort((a, b) => {
+          const aName = a.name.toLowerCase();
+          const bName = b.name.toLowerCase();
+          const aMatch = terms.every((t) => aName.includes(t));
+          const bMatch = terms.every((t) => bName.includes(t));
+          if (aMatch && !bMatch) return -1;
+          if (!aMatch && bMatch) return 1;
+          const aPartial = terms.some((t) => aName.includes(t));
+          const bPartial = terms.some((t) => bName.includes(t));
+          if (aPartial && !bPartial) return -1;
+          if (!aPartial && bPartial) return 1;
+          return 0;
+        });
     }
     return result;
   }, [products, filteredByCategory, search, showFavOnly, isFavorite]);
