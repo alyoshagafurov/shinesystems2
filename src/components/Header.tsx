@@ -5,16 +5,17 @@ import { useFavorites } from "./FavoritesProvider";
 
 export function Header() {
   const { totalItems, setIsOpen } = useCart();
-  const { totalFavorites, showFavOnly, setShowFavOnly } = useFavorites();
+  const { totalFavorites, setFavDrawerOpen, setShowFavOnly } = useFavorites();
 
   const goHome = () => {
+    setShowFavOnly(false);
     window.dispatchEvent(new CustomEvent("autoshine-go-home"));
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "instant" });
   };
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-neutral-100">
-      <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
+      <div className="px-4 h-14 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center overflow-hidden">
             <img src="/logo.png" alt="AUTOSHINE.TJ" className="w-full h-full object-contain" />
@@ -31,11 +32,11 @@ export function Header() {
           </button>
 
           <button
-            onClick={() => setShowFavOnly(!showFavOnly)}
+            onClick={() => setFavDrawerOpen(true)}
             className="relative p-2"
             aria-label="Избранное"
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill={showFavOnly ? "#ef4444" : "none"} stroke={showFavOnly ? "#ef4444" : "currentColor"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={showFavOnly ? "" : "text-neutral-400"}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-400">
               <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
             </svg>
             {totalFavorites > 0 && (

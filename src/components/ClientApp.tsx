@@ -7,6 +7,7 @@ import { Header } from "./Header";
 import { CompanyInfo } from "./CompanyInfo";
 import { Catalog } from "./Catalog";
 import { CartDrawer } from "./CartDrawer";
+import { FavoritesDrawer } from "./FavoritesDrawer";
 
 interface Category {
   id: string;
@@ -61,7 +62,7 @@ export function ClientApp({ categories: initialCategories, products: initialProd
         </main>
 
         <footer className="border-t border-neutral-100 bg-neutral-50">
-          <div className="max-w-5xl mx-auto px-4 py-8 text-center">
+          <div className="px-4 py-8 text-center">
             <p className="text-xs text-neutral-400">
               AUTOSHINE.TJ — Детейлинг Маркет
             </p>
@@ -79,6 +80,7 @@ export function ClientApp({ categories: initialCategories, products: initialProd
         </footer>
 
         <CartDrawer />
+        <FavoritesDrawer products={products} />
       </CartProvider>
     </FavoritesProvider>
   );

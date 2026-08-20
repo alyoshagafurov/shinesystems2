@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
 
@@ -10,13 +10,19 @@ const geistSans = Geist({
 export const metadata: Metadata = {
   title: "AUTOSHINE.TJ — Детейлинг Маркет",
   description: "Автохимия и аксессуары для детейлинга в Душанбе. Доставка по Таджикистану.",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ru" className={`${geistSans.variable} antialiased`}>
-      <body className="min-h-dvh flex flex-col bg-white text-neutral-900">
+      <body className="min-h-dvh flex flex-col bg-white text-neutral-900 touch-manipulation">
         {children}
       </body>
     </html>
