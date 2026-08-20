@@ -87,7 +87,7 @@ export function ProductCard({ product }: Props) {
         </div>
 
         <div className="p-3">
-          <h3 className="text-[13px] font-semibold tracking-tight leading-snug line-clamp-2 min-h-[2.5rem]">
+          <h3 className="text-[13px] font-semibold tracking-tight leading-snug">
             {product.name}
           </h3>
           <span className={`inline-block mt-1 text-[11px] font-medium ${product.inStock ? "text-green-600" : "text-red-500"}`}>
