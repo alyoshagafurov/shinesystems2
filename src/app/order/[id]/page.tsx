@@ -21,11 +21,12 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Заказ — AUTOSHINE.TJ</title>
+        <title>Заказ №{order.orderNumber} — AUTOSHINE.TJ</title>
       </head>
       <body style={{ margin: 0, padding: 24, fontFamily: "system-ui, -apple-system, sans-serif", color: "#111", maxWidth: 600, marginLeft: "auto", marginRight: "auto" }}>
         <div style={{ marginBottom: 20, paddingBottom: 16, borderBottom: "2px solid #111" }}>
           <h1 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>AUTOSHINE.TJ</h1>
+          <p style={{ fontSize: 15, fontWeight: 700, marginTop: 8 }}>Заказ №{order.orderNumber}</p>
           <p style={{ fontSize: 13, color: "#444", marginTop: 6 }}>{order.phone} · {date}</p>
           <p style={{ fontSize: 13, color: "#444", marginTop: 6 }}>{order.firstName} {order.lastName}</p>
           {order.address && <p style={{ fontSize: 13, color: "#444", marginTop: 6 }}>{order.address}</p>}

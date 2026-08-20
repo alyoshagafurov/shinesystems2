@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 interface Category { id: string; name: string; slug: string; parentId: string | null; order: number }
 interface Product { id: string; name: string; description: string; composition: string; dilution: string; application: string; precautions: string; storage: string; shelfLife: string; price: number; images: string[]; inStock: boolean; categoryId: string; category?: Category; order: number }
 interface OrderItem { id: string; name: string; price: number; quantity: number; productId: string }
-interface Order { id: string; firstName: string; lastName: string; phone: string; address: string; comment: string; total: number; status: string; items: OrderItem[]; createdAt: string }
+interface Order { id: string; orderNumber: number; firstName: string; lastName: string; phone: string; address: string; comment: string; total: number; status: string; items: OrderItem[]; createdAt: string }
 
 export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
@@ -149,7 +149,7 @@ export default function AdminPage() {
     const orderTotal = order.items.reduce((s, item) => s + item.price * item.quantity, 0);
     const phone = order.phone.replace(/\D/g, "");
     const orderUrl = `${window.location.origin}/order/${order.id}`;
-    const msg = `Ваш заказ от AUTOSHINE.TJ на сумму ${orderTotal.toLocaleString("ru-RU")} сомони.\n\nДетали заказа:\n${orderUrl}`;
+    const msg = `Заказ №${order.orderNumber} от AUTOSHINE.TJ на сумму ${orderTotal.toLocaleString("ru-RU")} сомони.\n\nДетали заказа:\n${orderUrl}`;
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
@@ -425,6 +425,7 @@ export default function AdminPage() {
                   <div key={order.id} className="bg-white rounded-xl border border-neutral-100 p-4">
                     <div className="flex items-start justify-between mb-3">
                       <div>
+                        <p className="text-xs font-bold text-neutral-500 mb-0.5">Заказ №{order.orderNumber}</p>
                         <p className="text-sm font-medium">{order.firstName} {order.lastName}</p>
                         <p className="text-xs text-neutral-400">{order.phone} · {new Date(order.createdAt).toLocaleDateString("ru-RU")}</p>
                         {order.address && <p className="text-xs text-neutral-400">{order.address}</p>}

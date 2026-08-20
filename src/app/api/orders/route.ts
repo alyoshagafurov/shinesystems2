@@ -9,8 +9,12 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: "Missing required fields" }, { status: 400 });
   }
 
+  const lastOrder = await prisma.order.findFirst({ orderBy: { orderNumber: "desc" }, select: { orderNumber: true } });
+  const nextNumber = (lastOrder?.orderNumber || 0) + 1;
+
   const order = await prisma.order.create({
     data: {
+      orderNumber: nextNumber,
       firstName,
       lastName: lastName || "",
       phone,
