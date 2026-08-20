@@ -7,21 +7,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const formData = await req.formData();
-  const file = formData.get("file") as File | null;
-  if (!file) {
-    return NextResponse.json({ error: "No file" }, { status: 400 });
+  const { html, orderId } = await req.json();
+  if (!html) {
+    return NextResponse.json({ error: "No html" }, { status: 400 });
   }
 
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const fileName = `orders/order_${Date.now()}.pdf`;
+  const buffer = Buffer.from(html, "utf-8");
+  const fileName = `orders/order_${orderId || Date.now()}.html`;
 
   const supabase = getSupabaseAdmin();
 
   const { error: uploadError } = await supabase.storage
     .from("products")
     .upload(fileName, buffer, {
-      contentType: "application/pdf",
+      contentType: "text/html; charset=utf-8",
       upsert: true,
     });
 

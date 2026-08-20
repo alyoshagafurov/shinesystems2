@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { jsPDF } from "jspdf";
-import "jspdf-autotable";
 
 interface Category { id: string; name: string; slug: string; parentId: string | null; order: number }
 interface Product { id: string; name: string; description: string; composition: string; dilution: string; application: string; precautions: string; storage: string; shelfLife: string; price: number; images: string[]; inStock: boolean; categoryId: string; category?: Category; order: number }
@@ -155,63 +153,39 @@ export default function AdminPage() {
       const orderTotal = order.items.reduce((s, item) => s + item.price * item.quantity, 0);
       const date = new Date(order.createdAt).toLocaleDateString("ru-RU");
 
-      const doc = new jsPDF();
-      doc.setFontSize(18);
-      doc.setFont("helvetica", "bold");
-      doc.text("AUTOSHINE.TJ", 14, 20);
-      doc.setFontSize(11);
-      doc.setFont("helvetica", "normal");
-      doc.text(`${order.phone}  ${date}`, 14, 28);
-      doc.text(`${order.firstName} ${order.lastName}`, 14, 34);
-      if (order.address) doc.text(order.address, 14, 40);
-
-      const startY = order.address ? 48 : 42;
-      const tableBody = order.items.map((item, i) => [
-        String(i + 1),
-        item.name,
-        `${item.quantity}`,
-        `${item.price.toLocaleString("ru-RU")}`,
-        `${(item.price * item.quantity).toLocaleString("ru-RU")}`,
-      ]);
-      tableBody.push(["", "", "", "TOTAL:", `${orderTotal.toLocaleString("ru-RU")}`]);
-
-      (doc as any).autoTable({
-        startY,
-        head: [["#", "Product", "Qty", "Price", "Sum"]],
-        body: tableBody,
-        theme: "grid",
-        headStyles: { fillColor: [30, 30, 30], fontSize: 10 },
-        bodyStyles: { fontSize: 10 },
-        columnStyles: {
-          0: { cellWidth: 12 },
-          2: { cellWidth: 22, halign: "center" },
-          3: { cellWidth: 30, halign: "right" },
-          4: { cellWidth: 30, halign: "right" },
-        },
-        didParseCell: (data: any) => {
-          if (data.row.index === tableBody.length - 1) {
-            data.cell.styles.fontStyle = "bold";
-            data.cell.styles.fontSize = 12;
-          }
-        },
-      });
-
-      const pdfBlob = doc.output("blob");
-      const formData = new FormData();
-      formData.append("file", pdfBlob, `order_${Date.now()}.pdf`);
+      const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Заказ AUTOSHINE.TJ</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,sans-serif}
+body{padding:24px;color:#111;max-width:600px;margin:0 auto}
+.header{margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid #111}
+.header h1{font-size:18px;font-weight:700}
+.info{font-size:13px;color:#444;margin-top:6px}
+table{width:100%;border-collapse:collapse;margin-top:16px;font-size:13px}
+th{text-align:left;padding:10px 8px;border-bottom:2px solid #ddd;font-weight:600;color:#666}
+th:nth-child(3),th:nth-child(4),th:nth-child(5){text-align:right}
+td{padding:10px 8px;border-bottom:1px solid #eee}
+td:nth-child(3),td:nth-child(4),td:nth-child(5){text-align:right}
+.total td{border-top:2px solid #111;border-bottom:none;font-weight:700;font-size:15px;padding-top:14px}</style></head><body>
+<div class="header"><h1>AUTOSHINE.TJ</h1>
+<p class="info">${order.phone} · ${date}</p>
+<p class="info">${order.firstName} ${order.lastName}</p>
+${order.address ? `<p class="info">${order.address}</p>` : ""}</div>
+<table><thead><tr><th>№</th><th>Товар</th><th>Кол-во</th><th>Цена</th><th>Сумма</th></tr></thead><tbody>
+${order.items.map((item, i) => `<tr><td>${i + 1}</td><td>${item.name}</td><td>${item.quantity} шт</td><td>${item.price.toLocaleString("ru-RU")} с.</td><td>${(item.price * item.quantity).toLocaleString("ru-RU")} с.</td></tr>`).join("")}
+</tbody><tfoot><tr class="total"><td colspan="4" style="text-align:right">ИТОГО:</td><td>${orderTotal.toLocaleString("ru-RU")} с.</td></tr></tfoot></table></body></html>`;
 
       const res = await fetch("/api/admin/orders/pdf", {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ html, orderId: order.id }),
       });
       const data = await res.json();
       if (!res.ok) {
-        alert("Ошибка загрузки PDF: " + (data.error || "Неизвестная ошибка"));
+        alert("Ошибка: " + (data.error || "Неизвестная ошибка"));
         return;
       }
 
       const phone = order.phone.replace(/\D/g, "");
-      const msg = `Ваш заказ от AUTOSHINE.TJ на сумму ${orderTotal.toLocaleString("ru-RU")} сомони.\n\nPDF:\n${data.url}`;
+      const msg = `Ваш заказ от AUTOSHINE.TJ на сумму ${orderTotal.toLocaleString("ru-RU")} сомони.\n\nДетали заказа:\n${data.url}`;
       window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
     } catch (e: any) {
       alert("Ошибка: " + e.message);
