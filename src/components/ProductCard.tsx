@@ -74,11 +74,6 @@ export function ProductCard({ product }: Props) {
               <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
             </svg>
           </button>
-          {!product.inStock && (
-            <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
-              <span className="px-3 py-1 rounded-full bg-red-500 text-white text-[10px] font-bold">Нет в наличии</span>
-            </div>
-          )}
           {product.images.length > 1 && (
             <div className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded-md bg-black/50 text-white text-[10px] font-medium">
               1/{product.images.length}
@@ -98,9 +93,7 @@ export function ProductCard({ product }: Props) {
             <span className="text-[15px] font-bold">
               {product.price.toLocaleString("ru-RU")} с.
             </span>
-            {!product.inStock ? (
-              <span className="px-3 py-2 rounded-xl bg-neutral-50 text-[11px] text-neutral-400">Недоступно</span>
-            ) : inCart ? (
+            {!product.inStock ? null : inCart ? (
               <div
                 className="flex items-center gap-0 rounded-xl border border-neutral-200 overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
@@ -222,7 +215,7 @@ export function ProductCard({ product }: Props) {
 
             <div className="border-t border-neutral-100 p-4">
               {!product.inStock ? (
-                <div className="w-full py-3.5 rounded-xl bg-neutral-100 text-neutral-400 text-sm font-medium text-center">
+                <div className="w-full py-3.5 rounded-xl text-red-500 text-sm font-medium text-center">
                   Нет в наличии
                 </div>
               ) : inCart ? (
