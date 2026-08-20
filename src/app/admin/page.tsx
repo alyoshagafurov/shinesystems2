@@ -503,8 +503,8 @@ export default function AdminPage() {
                                     <th className="py-2 pr-2 text-left text-neutral-400 font-medium w-8">№</th>
                                     <th className="py-2 px-2 text-left text-neutral-400 font-medium">Наименование товара</th>
                                     <th className="py-2 px-2 text-center text-neutral-400 font-medium w-16">Кол-во</th>
-                                    <th className="py-2 px-2 text-right text-neutral-400 font-medium w-20">Цена</th>
-                                    <th className="py-2 pl-2 text-right text-neutral-400 font-medium w-20">Сумма</th>
+                                    <th className="py-2 px-2 text-right text-neutral-400 font-medium whitespace-nowrap">Цена</th>
+                                    <th className="py-2 pl-2 text-right text-neutral-400 font-medium whitespace-nowrap">Сумма</th>
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -518,8 +518,8 @@ export default function AdminPage() {
                                         </div>
                                       </td>
                                       <td className="py-2 px-2 text-center">{item.quantity} шт</td>
-                                      <td className="py-2 px-2 text-right">{item.price.toLocaleString("ru-RU")}</td>
-                                      <td className="py-2 pl-2 text-right font-medium">{(item.price * item.quantity).toLocaleString("ru-RU")}</td>
+                                      <td className="py-2 px-2 text-right whitespace-nowrap">{item.price.toLocaleString("ru-RU")} с.</td>
+                                      <td className="py-2 pl-2 text-right font-medium whitespace-nowrap">{(item.price * item.quantity).toLocaleString("ru-RU")} с.</td>
                                     </tr>
                                   ))}
                                 </tbody>

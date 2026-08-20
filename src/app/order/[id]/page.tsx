@@ -53,8 +53,8 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
                   </div>
                 </td>
                 <td style={{ textAlign: "right", padding: "10px 8px", borderBottom: "1px solid #eee" }}>{item.quantity} шт</td>
-                <td style={{ textAlign: "right", padding: "10px 8px", borderBottom: "1px solid #eee" }}>{item.price.toLocaleString("ru-RU")} с.</td>
-                <td style={{ textAlign: "right", padding: "10px 8px", borderBottom: "1px solid #eee" }}>{(item.price * item.quantity).toLocaleString("ru-RU")} с.</td>
+                <td style={{ textAlign: "right", padding: "10px 8px", borderBottom: "1px solid #eee", whiteSpace: "nowrap" }}>{item.price.toLocaleString("ru-RU")} с.</td>
+                <td style={{ textAlign: "right", padding: "10px 8px", borderBottom: "1px solid #eee", whiteSpace: "nowrap" }}>{(item.price * item.quantity).toLocaleString("ru-RU")} с.</td>
               </tr>
             ))}
           </tbody>
