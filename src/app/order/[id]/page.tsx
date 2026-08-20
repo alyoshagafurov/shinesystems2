@@ -27,19 +27,19 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
         <div style={{ marginBottom: 16, paddingBottom: 12, borderBottom: "2px solid #111" }}>
           <h1 style={{ fontSize: 16, fontWeight: 700, margin: 0 }}>AUTOSHINE.TJ</h1>
           <p style={{ fontSize: 13, fontWeight: 700, marginTop: 6 }}>Заказ №{order.orderNumber}</p>
-          <p style={{ fontSize: 11, color: "#666", marginTop: 4 }}>{order.phone} · {date}</p>
-          <p style={{ fontSize: 11, color: "#666", marginTop: 2 }}>{order.firstName} {order.lastName}</p>
-          {order.address && <p style={{ fontSize: 11, color: "#666", marginTop: 2 }}>{order.address}</p>}
+          <p style={{ fontSize: 12, color: "#666", marginTop: 4 }}>{order.phone} · {date}</p>
+          <p style={{ fontSize: 12, color: "#666", marginTop: 2 }}>{order.firstName} {order.lastName}</p>
+          {order.address && <p style={{ fontSize: 12, color: "#666", marginTop: 2 }}>{order.address}</p>}
         </div>
 
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
           <thead>
             <tr>
-              <th style={{ textAlign: "left", padding: "8px 4px", borderBottom: "2px solid #ddd", fontWeight: 600, color: "#999", fontSize: 10 }}>№</th>
-              <th style={{ textAlign: "left", padding: "8px 4px", borderBottom: "2px solid #ddd", fontWeight: 600, color: "#999", fontSize: 10 }}>Товар</th>
-              <th style={{ textAlign: "center", padding: "8px 4px", borderBottom: "2px solid #ddd", fontWeight: 600, color: "#999", fontSize: 10, whiteSpace: "nowrap" }}>Кол-во</th>
-              <th style={{ textAlign: "right", padding: "8px 4px", borderBottom: "2px solid #ddd", fontWeight: 600, color: "#999", fontSize: 10, whiteSpace: "nowrap" }}>Цена</th>
-              <th style={{ textAlign: "right", padding: "8px 4px", borderBottom: "2px solid #ddd", fontWeight: 600, color: "#999", fontSize: 10, whiteSpace: "nowrap" }}>Сумма</th>
+              <th style={{ textAlign: "left", padding: "8px 4px", borderBottom: "2px solid #ddd", fontWeight: 600, color: "#999", fontSize: 11 }}>№</th>
+              <th style={{ textAlign: "left", padding: "8px 4px", borderBottom: "2px solid #ddd", fontWeight: 600, color: "#999", fontSize: 11 }}>Товар</th>
+              <th style={{ textAlign: "center", padding: "8px 4px", borderBottom: "2px solid #ddd", fontWeight: 600, color: "#999", fontSize: 11, whiteSpace: "nowrap" }}>Кол-во</th>
+              <th style={{ textAlign: "right", padding: "8px 4px", borderBottom: "2px solid #ddd", fontWeight: 600, color: "#999", fontSize: 11, whiteSpace: "nowrap" }}>Цена</th>
+              <th style={{ textAlign: "right", padding: "8px 4px", borderBottom: "2px solid #ddd", fontWeight: 600, color: "#999", fontSize: 11, whiteSpace: "nowrap" }}>Сумма</th>
             </tr>
           </thead>
           <tbody>
