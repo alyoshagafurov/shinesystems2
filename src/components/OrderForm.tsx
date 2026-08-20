@@ -28,8 +28,10 @@ export function OrderForm({ onBack }: Props) {
     if (!form.firstName || !form.phone) return;
     setSubmitting(true);
 
+    let orderId = "";
+    let orderNumber = 0;
     try {
-      await fetch("/api/orders", {
+      const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -43,16 +45,17 @@ export function OrderForm({ onBack }: Props) {
           })),
         }),
       });
+      const data = await res.json();
+      orderId = data.id;
+      orderNumber = data.orderNumber;
     } catch {}
 
-    let msg = `${form.firstName} ${form.lastName}\n${form.phone}\n`;
+    const orderUrl = orderId ? `${window.location.origin}/order/${orderId}` : "";
+    let msg = `Заказ №${orderNumber || "?"} от AUTOSHINE.TJ на сумму ${totalPrice.toLocaleString("ru-RU")} сомони.\n\n`;
+    msg += `${form.firstName} ${form.lastName}\n${form.phone}\n`;
     if (form.address) msg += `${form.address}\n`;
     if (form.comment) msg += `${form.comment}\n`;
-    msg += `\n`;
-    items.forEach((item, i) => {
-      msg += `${i + 1}. ${item.name} — ${item.quantity} x ${item.price}с = ${item.price * item.quantity}с\n`;
-    });
-    msg += `\nИтого: ${totalPrice.toLocaleString("ru-RU")} сомони`;
+    if (orderUrl) msg += `\nДетали заказа:\n${orderUrl}`;
 
     window.open(
       `https://wa.me/${ADMIN_WHATSAPP}?text=${encodeURIComponent(msg)}`,
