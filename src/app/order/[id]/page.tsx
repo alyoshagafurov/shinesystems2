@@ -16,47 +16,14 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
   const orderTotal = order.items.reduce((s, item) => s + item.price * item.quantity, 0);
   const date = order.createdAt.toLocaleDateString("ru-RU");
 
-  const zoomScript = `
-    (function() {
-      var wrap = document.getElementById('table-zoom');
-      if (!wrap) return;
-      var scale = 1, startDist = 0, startScale = 1, lastTap = 0;
-      function getDist(e) {
-        var t = e.touches;
-        return Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
-      }
-      wrap.addEventListener('touchstart', function(e) {
-        if (e.touches.length === 2) {
-          e.preventDefault();
-          startDist = getDist(e);
-          startScale = scale;
-        }
-        if (e.touches.length === 1) {
-          var now = Date.now();
-          if (now - lastTap < 300) { scale = 1; wrap.style.transform = 'scale(1)'; wrap.style.transformOrigin = 'top left'; }
-          lastTap = now;
-        }
-      }, { passive: false });
-      wrap.addEventListener('touchmove', function(e) {
-        if (e.touches.length === 2) {
-          e.preventDefault();
-          var d = getDist(e);
-          scale = Math.min(3, Math.max(1, startScale * (d / startDist)));
-          wrap.style.transform = 'scale(' + scale + ')';
-          wrap.style.transformOrigin = 'top left';
-        }
-      }, { passive: false });
-    })();
-  `;
-
   return (
     <html>
       <head>
         <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
         <title>Заказ №{order.orderNumber} — AUTOSHINE.TJ</title>
       </head>
-      <body style={{ margin: 0, padding: "16px 12px", fontFamily: "system-ui, -apple-system, sans-serif", color: "#111", maxWidth: 600, marginLeft: "auto", marginRight: "auto", overflowX: "hidden" }}>
+      <body style={{ margin: 0, padding: "16px 12px", fontFamily: "system-ui, -apple-system, sans-serif", color: "#111", maxWidth: 600, marginLeft: "auto", marginRight: "auto" }}>
         <div style={{ marginBottom: 16, paddingBottom: 12, borderBottom: "2px solid #111" }}>
           <h1 style={{ fontSize: 16, fontWeight: 700, margin: 0 }}>AUTOSHINE.TJ</h1>
           <p style={{ fontSize: 13, fontWeight: 700, marginTop: 6 }}>Заказ №{order.orderNumber}</p>
@@ -65,7 +32,7 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
           {order.address && <p style={{ fontSize: 12, color: "#666", marginTop: 2 }}>{order.address}</p>}
         </div>
 
-        <div id="table-zoom" style={{ touchAction: "pan-y", transition: "transform 0.15s ease" }}>
+        <div>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
             <thead>
               <tr>
@@ -100,8 +67,6 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
             </tfoot>
           </table>
         </div>
-
-        <script dangerouslySetInnerHTML={{ __html: zoomScript }} />
       </body>
     </html>
   );
