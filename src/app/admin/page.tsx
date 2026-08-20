@@ -339,8 +339,8 @@ export default function AdminPage() {
                       {p.images?.[0] && <img src={p.images[0]} alt="" className="w-full h-full object-cover" />}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">{p.name}</p>
-                      <p className="text-xs text-neutral-400">{p.category?.name} · {p.price.toLocaleString("ru-RU")} с. · <span className={p.inStock ? "text-green-600" : "text-red-500"}>{p.inStock ? "В наличии" : "Нет"}</span></p>
+                      <p className="text-sm font-medium">{p.name}</p>
+                      <p className="text-xs text-neutral-400">{p.price.toLocaleString("ru-RU")} с. · <span className={p.inStock ? "text-green-600" : "text-red-500"}>{p.inStock ? "В наличии" : "Нет"}</span></p>
                     </div>
                     <div className="flex gap-1.5 shrink-0">
                       <button onClick={() => startEdit(p)} className="px-3 py-1.5 rounded-lg bg-neutral-100 text-xs font-medium">Изм.</button>
