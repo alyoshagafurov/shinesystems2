@@ -37,9 +37,9 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
             <tr>
               <th style={{ textAlign: "left", padding: "10px 8px", borderBottom: "2px solid #ddd", fontWeight: 600, color: "#666" }}>№</th>
               <th style={{ textAlign: "left", padding: "10px 8px", borderBottom: "2px solid #ddd", fontWeight: 600, color: "#666" }}>Товар</th>
-              <th style={{ textAlign: "right", padding: "10px 8px", borderBottom: "2px solid #ddd", fontWeight: 600, color: "#666" }}>Кол-во</th>
-              <th style={{ textAlign: "right", padding: "10px 8px", borderBottom: "2px solid #ddd", fontWeight: 600, color: "#666" }}>Цена</th>
-              <th style={{ textAlign: "right", padding: "10px 8px", borderBottom: "2px solid #ddd", fontWeight: 600, color: "#666" }}>Сумма</th>
+              <th style={{ textAlign: "right", padding: "10px 8px", borderBottom: "2px solid #ddd", fontWeight: 600, color: "#666", whiteSpace: "nowrap" }}>Кол-во</th>
+              <th style={{ textAlign: "right", padding: "10px 8px", borderBottom: "2px solid #ddd", fontWeight: 600, color: "#666", whiteSpace: "nowrap" }}>Цена</th>
+              <th style={{ textAlign: "right", padding: "10px 8px", borderBottom: "2px solid #ddd", fontWeight: 600, color: "#666", whiteSpace: "nowrap" }}>Сумма</th>
             </tr>
           </thead>
           <tbody>
@@ -52,7 +52,7 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
                     <span>{item.name}</span>
                   </div>
                 </td>
-                <td style={{ textAlign: "right", padding: "10px 8px", borderBottom: "1px solid #eee" }}>{item.quantity} шт</td>
+                <td style={{ textAlign: "right", padding: "10px 8px", borderBottom: "1px solid #eee", whiteSpace: "nowrap" }}>{item.quantity} шт</td>
                 <td style={{ textAlign: "right", padding: "10px 8px", borderBottom: "1px solid #eee", whiteSpace: "nowrap" }}>{item.price.toLocaleString("ru-RU")} с.</td>
                 <td style={{ textAlign: "right", padding: "10px 8px", borderBottom: "1px solid #eee", whiteSpace: "nowrap" }}>{(item.price * item.quantity).toLocaleString("ru-RU")} с.</td>
               </tr>
