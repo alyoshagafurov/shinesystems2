@@ -46,7 +46,7 @@ export function ProductCard({ product }: Props) {
   return (
     <>
       <div
-        className="animate-fadeIn bg-white overflow-hidden cursor-pointer"
+        className="animate-fadeIn bg-white overflow-hidden cursor-pointer sm:rounded-2xl sm:border sm:border-neutral-100"
         onClick={() => { setOpen(true); setActiveImg(0); }}
       >
         <div className="aspect-square bg-neutral-50 relative overflow-hidden">
