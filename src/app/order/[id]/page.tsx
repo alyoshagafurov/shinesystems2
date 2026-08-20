@@ -20,10 +20,11 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
     <html>
       <head>
         <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
         <title>Заказ №{order.orderNumber} — AUTOSHINE.TJ</title>
+        <style dangerouslySetInnerHTML={{ __html: `* { touch-action: auto !important; } body { -webkit-text-size-adjust: 100%; }` }} />
       </head>
-      <body style={{ margin: 0, padding: "16px 12px", fontFamily: "system-ui, -apple-system, sans-serif", color: "#111", maxWidth: 600, marginLeft: "auto", marginRight: "auto" }}>
+      <body style={{ margin: 0, padding: "16px 12px", fontFamily: "system-ui, -apple-system, sans-serif", color: "#111", maxWidth: 600, marginLeft: "auto", marginRight: "auto", }}>
         <div style={{ marginBottom: 16, paddingBottom: 12, borderBottom: "2px solid #111" }}>
           <h1 style={{ fontSize: 16, fontWeight: 700, margin: 0 }}>AUTOSHINE.TJ</h1>
           <p style={{ fontSize: 13, fontWeight: 700, marginTop: 6 }}>Заказ №{order.orderNumber}</p>
