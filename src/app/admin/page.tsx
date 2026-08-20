@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 
 interface Category { id: string; name: string; slug: string; parentId: string | null; order: number }
 interface Product { id: string; name: string; description: string; composition: string; dilution: string; application: string; precautions: string; storage: string; shelfLife: string; price: number; images: string[]; inStock: boolean; categoryId: string; category?: Category; order: number }
-interface OrderItem { id: string; name: string; price: number; quantity: number; productId: string }
+interface OrderItem { id: string; name: string; price: number; quantity: number; productId: string; product?: { images: string[] } }
 interface Order { id: string; orderNumber: number; firstName: string; lastName: string; phone: string; address: string; comment: string; total: number; status: string; items: OrderItem[]; createdAt: string }
 
 export default function AdminPage() {
@@ -500,7 +500,12 @@ export default function AdminPage() {
                                   {order.items.map((item, idx) => (
                                     <tr key={item.id} className="border-b border-neutral-50">
                                       <td className="py-2 pr-2 font-medium">{idx + 1}</td>
-                                      <td className="py-2 px-2">{item.name}</td>
+                                      <td className="py-2 px-2">
+                                        <div className="flex items-center gap-2">
+                                          {item.product?.images?.[0] && <img src={item.product.images[0]} alt="" className="w-8 h-8 rounded object-contain bg-neutral-50 shrink-0" />}
+                                          <span>{item.name}</span>
+                                        </div>
+                                      </td>
                                       <td className="py-2 px-2 text-center">{item.quantity} шт</td>
                                       <td className="py-2 px-2 text-right">{item.price.toLocaleString("ru-RU")}</td>
                                       <td className="py-2 pl-2 text-right font-medium">{(item.price * item.quantity).toLocaleString("ru-RU")}</td>

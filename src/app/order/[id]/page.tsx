@@ -8,7 +8,7 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
 
   const order = await prisma.order.findUnique({
     where: { id },
-    include: { items: true },
+    include: { items: { include: { product: { select: { images: true } } } } },
   });
 
   if (!order) return notFound();
@@ -46,7 +46,12 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
             {order.items.map((item, i) => (
               <tr key={item.id}>
                 <td style={{ padding: "10px 8px", borderBottom: "1px solid #eee" }}>{i + 1}</td>
-                <td style={{ padding: "10px 8px", borderBottom: "1px solid #eee" }}>{item.name}</td>
+                <td style={{ padding: "10px 8px", borderBottom: "1px solid #eee" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    {item.product?.images?.[0] && <img src={item.product.images[0]} alt="" style={{ width: 36, height: 36, borderRadius: 4, objectFit: "contain", background: "#f5f5f5", flexShrink: 0 }} />}
+                    <span>{item.name}</span>
+                  </div>
+                </td>
                 <td style={{ textAlign: "right", padding: "10px 8px", borderBottom: "1px solid #eee" }}>{item.quantity} шт</td>
                 <td style={{ textAlign: "right", padding: "10px 8px", borderBottom: "1px solid #eee" }}>{item.price.toLocaleString("ru-RU")} с.</td>
                 <td style={{ textAlign: "right", padding: "10px 8px", borderBottom: "1px solid #eee" }}>{(item.price * item.quantity).toLocaleString("ru-RU")} с.</td>
