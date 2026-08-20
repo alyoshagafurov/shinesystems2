@@ -69,33 +69,33 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
             <thead>
               <tr>
-                <th style={{ textAlign: "left", padding: "8px 4px", borderBottom: "2px solid #ddd", fontWeight: 600, color: "#999", fontSize: 11 }}>№</th>
-                <th style={{ textAlign: "left", padding: "8px 4px", borderBottom: "2px solid #ddd", fontWeight: 600, color: "#999", fontSize: 11 }}>Товар</th>
-                <th style={{ textAlign: "center", padding: "8px 4px", borderBottom: "2px solid #ddd", fontWeight: 600, color: "#999", fontSize: 11, whiteSpace: "nowrap" }}>Кол-во</th>
-                <th style={{ textAlign: "right", padding: "8px 4px", borderBottom: "2px solid #ddd", fontWeight: 600, color: "#999", fontSize: 11, whiteSpace: "nowrap" }}>Цена</th>
-                <th style={{ textAlign: "right", padding: "8px 4px", borderBottom: "2px solid #ddd", fontWeight: 600, color: "#999", fontSize: 11, whiteSpace: "nowrap" }}>Сумма</th>
+                <th style={{ textAlign: "left", padding: "10px 6px", borderBottom: "2px solid #ddd", fontWeight: 600, color: "#999", fontSize: 11 }}>№</th>
+                <th style={{ textAlign: "left", padding: "10px 6px", borderBottom: "2px solid #ddd", fontWeight: 600, color: "#999", fontSize: 11 }}>Товар</th>
+                <th style={{ textAlign: "center", padding: "10px 8px", borderBottom: "2px solid #ddd", fontWeight: 600, color: "#999", fontSize: 11, whiteSpace: "nowrap" }}>Кол-во</th>
+                <th style={{ textAlign: "right", padding: "10px 8px", borderBottom: "2px solid #ddd", fontWeight: 600, color: "#999", fontSize: 11, whiteSpace: "nowrap" }}>Цена</th>
+                <th style={{ textAlign: "right", padding: "10px 8px 10px 12px", borderBottom: "2px solid #ddd", borderLeft: "1px solid #e5e5e5", fontWeight: 600, color: "#999", fontSize: 11, whiteSpace: "nowrap" }}>Сумма</th>
               </tr>
             </thead>
             <tbody>
               {order.items.map((item, i) => (
                 <tr key={item.id}>
-                  <td style={{ padding: "8px 4px", borderBottom: "1px solid #f0f0f0", verticalAlign: "middle" }}>{i + 1}</td>
-                  <td style={{ padding: "8px 4px", borderBottom: "1px solid #f0f0f0", verticalAlign: "middle" }}>
+                  <td style={{ padding: "10px 6px", borderBottom: "1px solid #f0f0f0", verticalAlign: "middle" }}>{i + 1}</td>
+                  <td style={{ padding: "10px 6px", borderBottom: "1px solid #f0f0f0", verticalAlign: "middle" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                       {item.product?.images?.[0] && <img src={item.product.images[0]} alt="" style={{ width: 30, height: 30, borderRadius: 3, objectFit: "contain", background: "#f5f5f5", flexShrink: 0 }} />}
                       <span>{item.name}</span>
                     </div>
                   </td>
-                  <td style={{ textAlign: "center", padding: "8px 4px", borderBottom: "1px solid #f0f0f0", whiteSpace: "nowrap", verticalAlign: "middle" }}>{item.quantity}</td>
-                  <td style={{ textAlign: "right", padding: "8px 4px", borderBottom: "1px solid #f0f0f0", whiteSpace: "nowrap", verticalAlign: "middle" }}>{item.price.toLocaleString("ru-RU")}</td>
-                  <td style={{ textAlign: "right", padding: "8px 4px", borderBottom: "1px solid #f0f0f0", whiteSpace: "nowrap", fontWeight: 600, verticalAlign: "middle" }}>{(item.price * item.quantity).toLocaleString("ru-RU")}</td>
+                  <td style={{ textAlign: "center", padding: "10px 8px", borderBottom: "1px solid #f0f0f0", whiteSpace: "nowrap", verticalAlign: "middle" }}>{item.quantity}</td>
+                  <td style={{ textAlign: "right", padding: "10px 8px", borderBottom: "1px solid #f0f0f0", whiteSpace: "nowrap", verticalAlign: "middle" }}>{item.price.toLocaleString("ru-RU")}</td>
+                  <td style={{ textAlign: "right", padding: "10px 8px 10px 12px", borderBottom: "1px solid #f0f0f0", borderLeft: "1px solid #e5e5e5", whiteSpace: "nowrap", fontWeight: 600, verticalAlign: "middle" }}>{(item.price * item.quantity).toLocaleString("ru-RU")}</td>
                 </tr>
               ))}
             </tbody>
             <tfoot>
               <tr>
-                <td colSpan={4} style={{ textAlign: "right", padding: "10px 4px 8px", borderTop: "2px solid #111", fontWeight: 700, fontSize: 13 }}>ИТОГО:</td>
-                <td style={{ textAlign: "right", padding: "10px 4px 8px", borderTop: "2px solid #111", fontWeight: 700, fontSize: 13 }}>{orderTotal.toLocaleString("ru-RU")}</td>
+                <td colSpan={4} style={{ textAlign: "right", padding: "12px 8px 10px", borderTop: "2px solid #111", fontWeight: 700, fontSize: 13 }}>ИТОГО:</td>
+                <td style={{ textAlign: "right", padding: "12px 8px 10px 12px", borderTop: "2px solid #111", borderLeft: "1px solid #e5e5e5", fontWeight: 700, fontSize: 13 }}>{orderTotal.toLocaleString("ru-RU")}</td>
               </tr>
             </tfoot>
           </table>
