@@ -517,16 +517,16 @@ export default function AdminPage() {
                                           <span>{item.name}</span>
                                         </div>
                                       </td>
-                                      <td className="py-2 px-2 text-center">{item.quantity} шт</td>
-                                      <td className="py-2 px-2 text-right whitespace-nowrap">{item.price.toLocaleString("ru-RU")} с.</td>
-                                      <td className="py-2 pl-2 text-right font-medium whitespace-nowrap">{(item.price * item.quantity).toLocaleString("ru-RU")} с.</td>
+                                      <td className="py-2 px-2 text-center whitespace-nowrap">{item.quantity}</td>
+                                      <td className="py-2 px-2 text-right whitespace-nowrap">{item.price.toLocaleString("ru-RU")}</td>
+                                      <td className="py-2 pl-2 text-right font-medium whitespace-nowrap">{(item.price * item.quantity).toLocaleString("ru-RU")}</td>
                                     </tr>
                                   ))}
                                 </tbody>
                                 <tfoot>
                                   <tr className="border-t-2 border-neutral-200">
                                     <td colSpan={4} className="py-2 pr-2 text-right font-bold text-sm">ИТОГО:</td>
-                                    <td className="py-2 pl-2 text-right font-bold text-sm">{orderTotal.toLocaleString("ru-RU")} с.</td>
+                                    <td className="py-2 pl-2 text-right font-bold text-sm">{orderTotal.toLocaleString("ru-RU")}</td>
                                   </tr>
                                 </tfoot>
                               </table>
