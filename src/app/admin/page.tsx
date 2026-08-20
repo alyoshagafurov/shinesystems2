@@ -164,14 +164,21 @@ export default function AdminPage() {
     if (res.ok) { setNewCatName(""); setNewCatParentId(""); loadData(); }
   };
 
+  const [editCatParentId, setEditCatParentId] = useState<string>("");
+
   const saveCategory = async () => {
     if (!editCat || !editCatName.trim()) return;
-    await fetch(`/api/admin/categories/${editCat.id}`, {
+    const res = await fetch(`/api/admin/categories/${editCat.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: editCatName.trim() }),
+      body: JSON.stringify({ name: editCatName.trim(), parentId: editCatParentId || null }),
     });
-    setEditCat(null); setEditCatName(""); loadData();
+    if (res.ok) {
+      setEditCat(null); setEditCatName(""); setEditCatParentId(""); loadData();
+    } else {
+      const data = await res.json();
+      alert("Ошибка: " + (data.error || "Неизвестная ошибка"));
+    }
   };
 
   const deleteCategory = async (id: string) => {
@@ -363,9 +370,13 @@ export default function AdminPage() {
               <div className="bg-white rounded-2xl border border-neutral-100 p-5 mb-4 space-y-3">
                 <h3 className="text-sm font-bold">Редактировать: {editCat.name}</h3>
                 <input placeholder="Новое название" value={editCatName} onChange={(e) => setEditCatName(e.target.value)} className="w-full px-4 py-2.5 rounded-xl bg-neutral-50 text-sm border-0" />
+                <select value={editCatParentId} onChange={(e) => setEditCatParentId(e.target.value)} className="w-full px-4 py-2.5 rounded-xl bg-neutral-50 text-sm border-0">
+                  <option value="">Верхний уровень (без родителя)</option>
+                  {categories.filter((c) => c.id !== editCat.id).map((c) => (<option key={c.id} value={c.id}>{getCategoryPath(c)}</option>))}
+                </select>
                 <div className="flex gap-2">
                   <button onClick={saveCategory} className="px-4 py-2 rounded-xl bg-neutral-900 text-white text-xs font-medium">Сохранить</button>
-                  <button onClick={() => { setEditCat(null); setEditCatName(""); }} className="px-4 py-2 rounded-xl bg-neutral-100 text-xs font-medium">Отмена</button>
+                  <button onClick={() => { setEditCat(null); setEditCatName(""); setEditCatParentId(""); }} className="px-4 py-2 rounded-xl bg-neutral-100 text-xs font-medium">Отмена</button>
                 </div>
               </div>
             )}
@@ -377,7 +388,7 @@ export default function AdminPage() {
                     <div className="flex items-center justify-between px-4 py-3">
                       <span className="text-sm font-bold">{top.name}</span>
                       <div className="flex gap-1.5">
-                        <button onClick={() => { setEditCat(top); setEditCatName(top.name); }} className="px-2 py-1 rounded-lg bg-neutral-100 text-[10px] font-medium">Изм.</button>
+                        <button onClick={() => { setEditCat(top); setEditCatName(top.name); setEditCatParentId(top.parentId || ""); }} className="px-2 py-1 rounded-lg bg-neutral-100 text-[10px] font-medium">Изм.</button>
                         <button onClick={() => deleteCategory(top.id)} className="px-2 py-1 rounded-lg bg-red-50 text-red-500 text-[10px] font-medium">Уд.</button>
                       </div>
                     </div>
@@ -390,7 +401,7 @@ export default function AdminPage() {
                               <div className="flex items-center justify-between px-4 py-2.5 pl-8 bg-neutral-50/50">
                                 <span className="text-xs font-medium text-neutral-700">{m.name}</span>
                                 <div className="flex gap-1.5">
-                                  <button onClick={() => { setEditCat(m); setEditCatName(m.name); }} className="px-2 py-1 rounded-lg bg-neutral-100 text-[10px] font-medium">Изм.</button>
+                                  <button onClick={() => { setEditCat(m); setEditCatName(m.name); setEditCatParentId(m.parentId || ""); }} className="px-2 py-1 rounded-lg bg-neutral-100 text-[10px] font-medium">Изм.</button>
                                   <button onClick={() => deleteCategory(m.id)} className="px-2 py-1 rounded-lg bg-red-50 text-red-500 text-[10px] font-medium">Уд.</button>
                                 </div>
                               </div>
@@ -398,7 +409,7 @@ export default function AdminPage() {
                                 <div key={l.id} className="flex items-center justify-between px-4 py-2 pl-14 border-t border-neutral-50">
                                   <span className="text-xs text-neutral-500">{l.name}</span>
                                   <div className="flex gap-1.5">
-                                    <button onClick={() => { setEditCat(l); setEditCatName(l.name); }} className="px-2 py-1 rounded-lg bg-neutral-100 text-[10px] font-medium">Изм.</button>
+                                    <button onClick={() => { setEditCat(l); setEditCatName(l.name); setEditCatParentId(l.parentId || ""); }} className="px-2 py-1 rounded-lg bg-neutral-100 text-[10px] font-medium">Изм.</button>
                                     <button onClick={() => deleteCategory(l.id)} className="px-2 py-1 rounded-lg bg-red-50 text-red-500 text-[10px] font-medium">Уд.</button>
                                   </div>
                                 </div>
