@@ -147,14 +147,41 @@ export default function AdminPage() {
 
   const sendOrderWhatsApp = (order: Order) => {
     const phone = order.phone.replace(/\D/g, "");
-    let msg = `Заказ от ${order.firstName} ${order.lastName}\n`;
-    if (order.address) msg += `Адрес: ${order.address}\n`;
-    msg += `\n`;
-    order.items.forEach((item, i) => {
-      msg += `${i + 1}. ${item.name} — ${item.quantity} x ${item.price}с = ${(item.price * item.quantity).toLocaleString("ru-RU")}с\n`;
-    });
-    msg += `\nИТОГО: ${order.total.toLocaleString("ru-RU")} сомони`;
-    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
+    const orderTotal = order.items.reduce((s, item) => s + item.price * item.quantity, 0);
+    const date = new Date(order.createdAt).toLocaleDateString("ru-RU");
+
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Заказ</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,sans-serif}
+body{padding:32px;color:#111}
+.header{margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid #111}
+.header h1{font-size:18px;font-weight:700}
+.info{font-size:13px;color:#444;margin-top:6px}
+table{width:100%;border-collapse:collapse;margin-top:16px;font-size:13px}
+th{text-align:left;padding:10px 8px;border-bottom:2px solid #ddd;font-weight:600;color:#666}
+th:nth-child(3),th:nth-child(4),th:nth-child(5){text-align:right}
+td{padding:10px 8px;border-bottom:1px solid #eee}
+td:nth-child(3),td:nth-child(4),td:nth-child(5){text-align:right}
+.total td{border-top:2px solid #111;border-bottom:none;font-weight:700;font-size:15px;padding-top:14px}
+@media print{body{padding:20px}}</style></head><body>
+<div class="header"><h1>AUTOSHINE.TJ</h1>
+<p class="info">${order.phone} · ${date}</p>
+<p class="info">${order.firstName} ${order.lastName}</p>
+${order.address ? `<p class="info">${order.address}</p>` : ""}</div>
+<table><thead><tr><th>№</th><th>Наименование товара</th><th>Кол-во</th><th>Цена, сомони</th><th>Сумма, сомони</th></tr></thead><tbody>
+${order.items.map((item, i) => `<tr><td>${i + 1}</td><td>${item.name}</td><td>${item.quantity} шт</td><td>${item.price.toLocaleString("ru-RU")}</td><td>${(item.price * item.quantity).toLocaleString("ru-RU")}</td></tr>`).join("")}
+</tbody><tfoot><tr class="total"><td colspan="4" style="text-align:right">ИТОГО:</td><td>${orderTotal.toLocaleString("ru-RU")}</td></tr></tfoot></table></body></html>`;
+
+    const printWin = window.open("", "_blank");
+    if (printWin) {
+      printWin.document.write(html);
+      printWin.document.close();
+      printWin.onload = () => printWin.print();
+    }
+
+    const msg = `Ваш заказ от AUTOSHINE.TJ:\n\n${order.items.map((item, i) => `${i + 1}. ${item.name} — ${item.quantity} x ${item.price}с = ${(item.price * item.quantity).toLocaleString("ru-RU")}с`).join("\n")}\n\nИТОГО: ${orderTotal.toLocaleString("ru-RU")} сомони`;
+    setTimeout(() => {
+      window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
+    }, 500);
   };
 
   const addCategory = async () => {

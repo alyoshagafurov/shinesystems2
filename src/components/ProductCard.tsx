@@ -46,7 +46,7 @@ export function ProductCard({ product }: Props) {
   return (
     <>
       <div
-        className="animate-fadeIn bg-white rounded-2xl border border-neutral-100 overflow-hidden cursor-pointer"
+        className="animate-fadeIn bg-white overflow-hidden cursor-pointer"
         onClick={() => { setOpen(true); setActiveImg(0); }}
       >
         <div className="aspect-square bg-neutral-50 relative overflow-hidden">
@@ -86,16 +86,16 @@ export function ProductCard({ product }: Props) {
           )}
         </div>
 
-        <div className="p-4">
-          <h3 className="text-sm font-semibold tracking-tight leading-tight">
+        <div className="p-3">
+          <h3 className="text-[13px] font-semibold tracking-tight leading-snug line-clamp-2 min-h-[2.5rem]">
             {product.name}
           </h3>
-          <span className={`inline-block mt-1.5 text-[11px] font-medium ${product.inStock ? "text-green-600" : "text-red-500"}`}>
+          <span className={`inline-block mt-1 text-[11px] font-medium ${product.inStock ? "text-green-600" : "text-red-500"}`}>
             {product.inStock ? "В наличии" : "Нет в наличии"}
           </span>
 
-          <div className="flex items-center justify-between mt-3 pt-3 border-t border-neutral-50">
-            <span className="text-base font-bold">
+          <div className="flex items-center justify-between mt-2">
+            <span className="text-[15px] font-bold">
               {product.price.toLocaleString("ru-RU")} с.
             </span>
             {!product.inStock ? (

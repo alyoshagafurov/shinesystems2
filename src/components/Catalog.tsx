@@ -118,7 +118,7 @@ export function Catalog({ categories, products }: Props) {
       <SearchBar value={search} onChange={setSearch} />
       <CategoryFilter categories={categories} activePath={categoryPath} onNavigate={handleNavigate} />
 
-      <section className="max-w-5xl mx-auto px-4 py-6">
+      <section className="py-1">
         {filtered.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-neutral-400 text-sm">
@@ -126,7 +126,7 @@ export function Catalog({ categories, products }: Props) {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 gap-[1px] bg-neutral-100">
             {filtered.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
