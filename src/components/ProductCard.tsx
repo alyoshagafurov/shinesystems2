@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCart } from "./CartProvider";
 import { useFavorites } from "./FavoritesProvider";
 
@@ -21,6 +21,7 @@ interface Product {
 
 interface Props {
   product: Product;
+  autoOpen?: boolean;
 }
 
 function InfoSection({ label, text }: { label: string; text: string }) {
@@ -33,12 +34,35 @@ function InfoSection({ label, text }: { label: string; text: string }) {
   );
 }
 
-export function ProductCard({ product }: Props) {
+export function ProductCard({ product, autoOpen }: Props) {
   const { addItem, removeItem, updateQuantity, items } = useCart();
   const { isFavorite, toggleFavorite } = useFavorites();
   const inCart = items.find((i) => i.id === product.id);
   const [open, setOpen] = useState(false);
   const [activeImg, setActiveImg] = useState(0);
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = async () => {
+    const url = `${window.location.origin}/product/${product.id}`;
+    const shareData = {
+      title: product.name,
+      text: product.description || product.name,
+      url,
+    };
+    if (navigator.share) {
+      try { await navigator.share(shareData); } catch {}
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch {}
+    }
+  };
+
+  useEffect(() => {
+    if (autoOpen) setOpen(true);
+  }, [autoOpen]);
 
   const firstImage = product.images?.[0];
   const fav = isFavorite(product.id);
@@ -141,6 +165,20 @@ export function ProductCard({ product }: Props) {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="absolute top-3 right-3 z-10 flex gap-2">
+              <button
+                onClick={handleShare}
+                className="w-9 h-9 rounded-full bg-white/90 flex items-center justify-center shadow-sm relative"
+              >
+                {copied ? (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                ) : (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-600">
+                    <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8" /><polyline points="16 6 12 2 8 6" /><line x1="12" y1="2" x2="12" y2="15" />
+                  </svg>
+                )}
+              </button>
               <button
                 onClick={() => toggleFavorite(product.id)}
                 className="w-9 h-9 rounded-full bg-white/90 flex items-center justify-center shadow-sm"

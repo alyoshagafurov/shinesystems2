@@ -53,6 +53,16 @@ export function Catalog({ categories, products }: Props) {
   const [search, setSearch] = useState("");
   const [categoryPath, setCategoryPath] = useState<string[]>([]);
   const { isFavorite, showFavOnly } = useFavorites();
+  const [autoOpenId, setAutoOpenId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const pid = params.get("product");
+    if (pid) {
+      setAutoOpenId(pid);
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, []);
 
   useEffect(() => {
     const handler = () => {
@@ -128,7 +138,7 @@ export function Catalog({ categories, products }: Props) {
         ) : (
           <div className="grid grid-cols-2 gap-[1px] bg-neutral-100 sm:gap-4 sm:bg-transparent sm:grid-cols-3 lg:grid-cols-4">
             {filtered.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product.id} product={product} autoOpen={autoOpenId === product.id} />
             ))}
           </div>
         )}
