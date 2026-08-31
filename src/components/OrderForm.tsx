@@ -51,11 +51,8 @@ export function OrderForm({ onBack }: Props) {
     } catch {}
 
     const orderUrl = orderId ? `${window.location.origin}/order/${orderId}` : "";
-    let msg = `Заказ №${orderNumber || "?"} от AUTOSHINE.TJ на сумму ${totalPrice.toLocaleString("ru-RU")} сомони.\n\n`;
-    msg += `${form.firstName} ${form.lastName}\n${form.phone}\n`;
-    if (form.address) msg += `${form.address}\n`;
-    if (form.comment) msg += `${form.comment}\n`;
-    if (orderUrl) msg += `\nДетали заказа:\n${orderUrl}`;
+    let msg = `Заказ №${orderNumber || "?"} от AUTOSHINE.TJ на сумму ${totalPrice.toLocaleString("ru-RU")} сомони.`;
+    if (orderUrl) msg += `\n\n${orderUrl}`;
 
     window.open(
       `https://wa.me/${ADMIN_WHATSAPP}?text=${encodeURIComponent(msg)}`,
