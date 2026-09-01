@@ -46,7 +46,7 @@ export function ProductCard({ product, autoOpen }: Props) {
     const url = `${window.location.origin}/product/${product.id}`;
     const shareData = {
       title: product.name,
-      text: product.description || product.name,
+      text: product.name,
       url,
     };
     if (navigator.share) {
