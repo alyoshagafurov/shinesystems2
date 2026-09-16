@@ -20,14 +20,14 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
   if (!(await isAdmin())) return new Response("Unauthorized", { status: 401 });
   const { id } = await params;
 
-  const hasProducts = await prisma.product.count({ where: { categoryId: id } });
-  if (hasProducts > 0) {
-    return Response.json({ error: "Нельзя удалить категорию с товарами" }, { status: 400 });
+  const products = await prisma.product.count({ where: { categoryId: id } });
+  if (products > 0) {
+    return Response.json({ error: `В этой категории ${products} товар(ов). Сначала переместите товары в другую категорию.` }, { status: 400 });
   }
 
-  const hasChildren = await prisma.category.count({ where: { parentId: id } });
-  if (hasChildren > 0) {
-    return Response.json({ error: "Нельзя удалить категорию с подкатегориями" }, { status: 400 });
+  const children = await prisma.category.count({ where: { parentId: id } });
+  if (children > 0) {
+    return Response.json({ error: `В этой категории ${children} подкатегорий. Сначала переместите или удалите их.` }, { status: 400 });
   }
 
   await prisma.category.delete({ where: { id } });

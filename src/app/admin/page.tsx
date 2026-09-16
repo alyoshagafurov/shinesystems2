@@ -357,60 +357,69 @@ export default function AdminPage() {
         {tab === "categories" && (
           <>
             <h2 className="text-lg font-bold mb-4">Категории</h2>
-            <div className="bg-white rounded-2xl border border-neutral-100 p-5 mb-4 space-y-3">
+
+            <div className="bg-white rounded-2xl border border-neutral-100 p-5 mb-6 space-y-3">
               <h3 className="text-sm font-bold">Добавить категорию</h3>
               <input placeholder="Название категории" value={newCatName} onChange={(e) => setNewCatName(e.target.value)} className="w-full px-4 py-2.5 rounded-xl bg-neutral-50 text-sm border-0" />
               <select value={newCatParentId} onChange={(e) => setNewCatParentId(e.target.value)} className="w-full px-4 py-2.5 rounded-xl bg-neutral-50 text-sm border-0">
-                <option value="">Верхний уровень (без родителя)</option>
-                {categories.map((c) => (<option key={c.id} value={c.id}>{getCategoryPath(c)}</option>))}
+                <option value="">Главная категория (верхний уровень)</option>
+                {categories.map((c) => (<option key={c.id} value={c.id}>{"↳ " + getCategoryPath(c)}</option>))}
               </select>
-              <button onClick={addCategory} className="px-4 py-2 rounded-xl bg-neutral-900 text-white text-xs font-medium">+ Добавить</button>
+              <button onClick={addCategory} disabled={!newCatName.trim()} className="w-full py-2.5 rounded-xl bg-neutral-900 text-white text-sm font-medium disabled:opacity-40">+ Добавить категорию</button>
             </div>
+
             {editCat && (
-              <div className="bg-white rounded-2xl border border-neutral-100 p-5 mb-4 space-y-3">
-                <h3 className="text-sm font-bold">Редактировать: {editCat.name}</h3>
-                <input placeholder="Новое название" value={editCatName} onChange={(e) => setEditCatName(e.target.value)} className="w-full px-4 py-2.5 rounded-xl bg-neutral-50 text-sm border-0" />
-                <select value={editCatParentId} onChange={(e) => setEditCatParentId(e.target.value)} className="w-full px-4 py-2.5 rounded-xl bg-neutral-50 text-sm border-0">
-                  <option value="">Верхний уровень (без родителя)</option>
-                  {categories.filter((c) => c.id !== editCat.id).map((c) => (<option key={c.id} value={c.id}>{getCategoryPath(c)}</option>))}
-                </select>
+              <div className="bg-blue-50 rounded-2xl border border-blue-200 p-5 mb-6 space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-bold text-blue-900">Редактировать: {editCat.name}</h3>
+                  <button onClick={() => { setEditCat(null); setEditCatName(""); setEditCatParentId(""); }} className="text-blue-400 text-lg leading-none">&times;</button>
+                </div>
+                <input placeholder="Название" value={editCatName} onChange={(e) => setEditCatName(e.target.value)} className="w-full px-4 py-2.5 rounded-xl bg-white text-sm border border-blue-200" />
+                <div>
+                  <label className="text-xs text-blue-700 mb-1 block">Переместить в:</label>
+                  <select value={editCatParentId} onChange={(e) => setEditCatParentId(e.target.value)} className="w-full px-4 py-2.5 rounded-xl bg-white text-sm border border-blue-200">
+                    <option value="">Главная категория (верхний уровень)</option>
+                    {categories.filter((c) => c.id !== editCat.id).map((c) => (<option key={c.id} value={c.id}>{"↳ " + getCategoryPath(c)}</option>))}
+                  </select>
+                </div>
                 <div className="flex gap-2">
-                  <button onClick={saveCategory} className="px-4 py-2 rounded-xl bg-neutral-900 text-white text-xs font-medium">Сохранить</button>
-                  <button onClick={() => { setEditCat(null); setEditCatName(""); setEditCatParentId(""); }} className="px-4 py-2 rounded-xl bg-neutral-100 text-xs font-medium">Отмена</button>
+                  <button onClick={saveCategory} className="flex-1 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-medium">Сохранить</button>
+                  <button onClick={() => { setEditCat(null); setEditCatName(""); setEditCatParentId(""); }} className="px-4 py-2.5 rounded-xl bg-white border border-blue-200 text-sm font-medium text-blue-700">Отмена</button>
                 </div>
               </div>
             )}
-            <div className="space-y-1">
+
+            <div className="space-y-2">
               {topCategories.map((top) => {
                 const mid = getChildren(top.id);
                 return (
-                  <div key={top.id} className="bg-white rounded-xl border border-neutral-100 overflow-hidden">
-                    <div className="flex items-center justify-between px-4 py-3">
-                      <span className="text-sm font-bold">{top.name}</span>
-                      <div className="flex gap-1.5">
-                        <button onClick={() => { setEditCat(top); setEditCatName(top.name); setEditCatParentId(top.parentId || ""); }} className="px-2 py-1 rounded-lg bg-neutral-100 text-[10px] font-medium">Изм.</button>
-                        <button onClick={() => deleteCategory(top.id)} className="px-2 py-1 rounded-lg bg-red-50 text-red-500 text-[10px] font-medium">Уд.</button>
+                  <div key={top.id} className="bg-white rounded-2xl border border-neutral-100 overflow-hidden">
+                    <div className="flex items-center justify-between px-4 py-3.5">
+                      <span className="text-sm font-bold flex-1">{top.name}</span>
+                      <div className="flex gap-2 shrink-0">
+                        <button onClick={() => { setEditCat(top); setEditCatName(top.name); setEditCatParentId(top.parentId || ""); }} className="px-3 py-1.5 rounded-lg bg-neutral-100 text-xs font-medium">Изменить</button>
+                        <button onClick={() => deleteCategory(top.id)} className="px-3 py-1.5 rounded-lg bg-red-50 text-red-500 text-xs font-medium">Удалить</button>
                       </div>
                     </div>
                     {mid.length > 0 && (
-                      <div className="border-t border-neutral-50">
+                      <div className="border-t border-neutral-100">
                         {mid.map((m) => {
                           const leaves = getChildren(m.id);
                           return (
                             <div key={m.id}>
-                              <div className="flex items-center justify-between px-4 py-2.5 pl-8 bg-neutral-50/50">
-                                <span className="text-xs font-medium text-neutral-700">{m.name}</span>
-                                <div className="flex gap-1.5">
-                                  <button onClick={() => { setEditCat(m); setEditCatName(m.name); setEditCatParentId(m.parentId || ""); }} className="px-2 py-1 rounded-lg bg-neutral-100 text-[10px] font-medium">Изм.</button>
-                                  <button onClick={() => deleteCategory(m.id)} className="px-2 py-1 rounded-lg bg-red-50 text-red-500 text-[10px] font-medium">Уд.</button>
+                              <div className="flex items-center justify-between px-4 py-3 pl-8 bg-neutral-50/60 border-b border-neutral-100">
+                                <span className="text-xs font-semibold text-neutral-700 flex-1">{"— " + m.name}</span>
+                                <div className="flex gap-2 shrink-0">
+                                  <button onClick={() => { setEditCat(m); setEditCatName(m.name); setEditCatParentId(m.parentId || ""); }} className="px-3 py-1.5 rounded-lg bg-white border border-neutral-200 text-xs font-medium">Изменить</button>
+                                  <button onClick={() => deleteCategory(m.id)} className="px-3 py-1.5 rounded-lg bg-red-50 text-red-500 text-xs font-medium">Удалить</button>
                                 </div>
                               </div>
                               {leaves.length > 0 && leaves.map((l) => (
-                                <div key={l.id} className="flex items-center justify-between px-4 py-2 pl-14 border-t border-neutral-50">
-                                  <span className="text-xs text-neutral-500">{l.name}</span>
-                                  <div className="flex gap-1.5">
-                                    <button onClick={() => { setEditCat(l); setEditCatName(l.name); setEditCatParentId(l.parentId || ""); }} className="px-2 py-1 rounded-lg bg-neutral-100 text-[10px] font-medium">Изм.</button>
-                                    <button onClick={() => deleteCategory(l.id)} className="px-2 py-1 rounded-lg bg-red-50 text-red-500 text-[10px] font-medium">Уд.</button>
+                                <div key={l.id} className="flex items-center justify-between px-4 py-2.5 pl-14 border-b border-neutral-50">
+                                  <span className="text-xs text-neutral-500 flex-1">{"— — " + l.name}</span>
+                                  <div className="flex gap-2 shrink-0">
+                                    <button onClick={() => { setEditCat(l); setEditCatName(l.name); setEditCatParentId(l.parentId || ""); }} className="px-3 py-1.5 rounded-lg bg-white border border-neutral-200 text-xs font-medium">Изменить</button>
+                                    <button onClick={() => deleteCategory(l.id)} className="px-3 py-1.5 rounded-lg bg-red-50 text-red-500 text-xs font-medium">Удалить</button>
                                   </div>
                                 </div>
                               ))}
