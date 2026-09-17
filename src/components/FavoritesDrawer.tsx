@@ -2,6 +2,7 @@
 
 import { useFavorites } from "./FavoritesProvider";
 import { useCart } from "./CartProvider";
+import { ProductImage } from "./ProductImage";
 
 interface Product {
   id: string;
@@ -48,9 +49,9 @@ export function FavoritesDrawer({ products }: { products: Product[] }) {
               const inCart = items.some((i) => i.id === product.id);
               return (
                 <div key={product.id} className="flex gap-3">
-                  <div className="w-16 h-16 rounded-xl bg-neutral-50 shrink-0 overflow-hidden">
+                  <div className="relative w-16 h-16 rounded-xl bg-neutral-50 shrink-0 overflow-hidden">
                     {product.images?.[0] ? (
-                      <img src={product.images[0]} alt={product.name} className="w-full h-full object-contain" />
+                      <ProductImage src={product.images[0]} alt={product.name} sizes="64px" className="object-contain" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
                         <div className="w-6 h-8 rounded bg-neutral-200" />
@@ -63,7 +64,7 @@ export function FavoritesDrawer({ products }: { products: Product[] }) {
                     <div className="flex items-center gap-2 mt-1.5">
                       {product.inStock && !inCart && (
                         <button
-                          onClick={() => addItem(product as Parameters<typeof addItem>[0])}
+                          onClick={() => addItem(product)}
                           className="px-3 py-1.5 rounded-lg bg-neutral-100 text-xs font-medium"
                         >
                           В корзину

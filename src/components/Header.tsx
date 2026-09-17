@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useCart } from "./CartProvider";
 import { useFavorites } from "./FavoritesProvider";
@@ -27,7 +28,7 @@ export function Header() {
       <div className="px-4 h-14 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center overflow-hidden">
-            <img src="/logo.png" alt="AUTOSHINE.TJ" className="w-full h-full object-contain" />
+            <Image src="/logo.png" alt="AUTOSHINE.TJ" width={32} height={32} className="w-full h-full object-contain" />
           </div>
           <span className="text-sm font-semibold tracking-tight">AUTOSHINE.TJ</span>
         </div>

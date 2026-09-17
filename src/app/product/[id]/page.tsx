@@ -38,7 +38,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
     where: { categoryId: product.categoryId, id: { not: product.id } },
     orderBy: { order: "asc" },
     take: 20,
-    select: { id: true, name: true, description: true, price: true, images: true, inStock: true },
+    select: { id: true, name: true, price: true, images: true, inStock: true },
   });
 
   return (

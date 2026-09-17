@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useCart } from "./CartProvider";
 import { OrderForm } from "./OrderForm";
+import { ProductImage } from "./ProductImage";
 
 export function CartDrawer() {
   const { items, removeItem, updateQuantity, totalPrice, totalItems, isOpen, setIsOpen } = useCart();
@@ -48,9 +49,9 @@ export function CartDrawer() {
             <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
               {items.map((item) => (
                 <div key={item.id} className="flex gap-3">
-                  <div className="w-16 h-16 rounded-xl bg-neutral-50 shrink-0 overflow-hidden">
+                  <div className="relative w-16 h-16 rounded-xl bg-neutral-50 shrink-0 overflow-hidden">
                     {item.images?.[0] ? (
-                      <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover" />
+                      <ProductImage src={item.images[0]} alt={item.name} sizes="64px" className="object-cover" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
                         <div className="w-6 h-8 rounded bg-neutral-200" />

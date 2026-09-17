@@ -3,55 +3,33 @@
 import { useState, useEffect } from "react";
 import { SiteShell } from "./SiteShell";
 import { CompanyInfo } from "./CompanyInfo";
-import { Catalog } from "./Catalog";
-
-interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  parentId: string | null;
-}
-
-interface Product {
-  id: string;
-  name: string;
-  description: string;
-  composition: string;
-  dilution: string;
-  application: string;
-  precautions: string;
-  storage: string;
-  shelfLife: string;
-  price: number;
-  images: string[];
-  inStock: boolean;
-  categoryId: string;
-}
+import { Catalog, type CatalogCategory, type CatalogProduct } from "./Catalog";
 
 interface Props {
-  categories: Category[];
-  products: Product[];
+  categories: CatalogCategory[];
+  products: CatalogProduct[];
+  version: string;
 }
 
-export function ClientApp({ categories: initialCategories, products: initialProducts }: Props) {
-  const [categories, setCategories] = useState(initialCategories);
-  const [products, setProducts] = useState(initialProducts);
+export function ClientApp({ categories: initialCategories, products: initialProducts, version }: Props) {
+  const [catalog, setCatalog] = useState({ categories: initialCategories, products: initialProducts });
 
   useEffect(() => {
-    Promise.all([
-      fetch("/api/categories", { cache: "no-store" }).then((r) => r.json()),
-      fetch("/api/products", { cache: "no-store" }).then((r) => r.json()),
-    ]).then(([cats, prods]) => {
-      setCategories(cats);
-      setProducts(prods);
-    });
-  }, []);
+    fetch(`/api/catalog?v=${encodeURIComponent(version)}`, { cache: "no-store" })
+      .then((r) => r.json())
+      .then((data) => {
+        if (!data.unchanged && Array.isArray(data.products) && Array.isArray(data.categories)) {
+          setCatalog({ categories: data.categories, products: data.products });
+        }
+      })
+      .catch(() => {});
+  }, [version]);
 
   return (
-    <SiteShell products={products}>
+    <SiteShell products={catalog.products}>
       <CompanyInfo />
       <div className="border-t border-neutral-100" />
-      <Catalog categories={categories} products={products} />
+      <Catalog categories={catalog.categories} products={catalog.products} />
     </SiteShell>
   );
 }

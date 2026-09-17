@@ -4,11 +4,11 @@ import Link from "next/link";
 import { useCart } from "./CartProvider";
 import { useFavorites } from "./FavoritesProvider";
 import { markInternalNav } from "@/lib/nav";
+import { ProductImage } from "./ProductImage";
 
 interface Product {
   id: string;
   name: string;
-  description: string;
   price: number;
   images: string[];
   inStock: boolean;
@@ -26,13 +26,13 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <div className="animate-fadeIn bg-white overflow-hidden sm:rounded-2xl sm:border sm:border-neutral-100">
       <div className="relative">
-        <Link href={href} prefetch={false} onClick={markInternalNav} className="block aspect-square bg-neutral-50 overflow-hidden">
+        <Link href={href} prefetch={false} onClick={markInternalNav} className="relative block aspect-square bg-neutral-50 overflow-hidden">
           {firstImage ? (
-            <img
+            <ProductImage
               src={firstImage}
               alt={product.name}
-              className="w-full h-full object-contain"
-              loading="lazy"
+              sizes="(min-width: 1024px) 250px, (min-width: 640px) 33vw, 50vw"
+              className="object-contain"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center">

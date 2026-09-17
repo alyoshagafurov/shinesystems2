@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { ProductImage } from "./ProductImage";
 
 const hideScrollbar = "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden";
 
@@ -110,9 +111,16 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
               key={i}
               onClick={() => setFullscreen(true)}
               aria-label="Открыть фото на весь экран"
-              className="w-full aspect-square shrink-0 snap-center cursor-zoom-in"
+              className="relative w-full aspect-square shrink-0 snap-center cursor-zoom-in"
             >
-              <img src={src} alt={`${name} — фото ${i + 1}`} className="w-full h-full object-contain" />
+              <ProductImage
+                src={src}
+                alt={`${name} — фото ${i + 1}`}
+                sizes="(min-width: 640px) 512px, 100vw"
+                quality={75}
+                preload={i === 0}
+                className="object-contain"
+              />
             </button>
           ))}
         </div>
@@ -134,9 +142,9 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
               key={i}
               onClick={() => scrollToIndex(ref.current, i)}
               aria-label={`Фото ${i + 1}`}
-              className={`w-16 h-16 shrink-0 rounded-xl overflow-hidden bg-neutral-50 border-2 transition-colors ${i === active ? "border-neutral-900" : "border-transparent"}`}
+              className={`relative w-16 h-16 shrink-0 rounded-xl overflow-hidden bg-neutral-50 border-2 transition-colors ${i === active ? "border-neutral-900" : "border-transparent"}`}
             >
-              <img src={src} alt="" className="w-full h-full object-contain" />
+              <ProductImage src={src} alt="" sizes="64px" className="object-contain" />
             </button>
           ))}
         </div>

@@ -10,7 +10,6 @@ import { FavoritesDrawer } from "./FavoritesDrawer";
 interface DrawerProduct {
   id: string;
   name: string;
-  description: string;
   price: number;
   images: string[];
   inStock: boolean;
@@ -22,9 +21,9 @@ function Favorites({ products }: { products?: DrawerProduct[] }) {
 
   useEffect(() => {
     if (products || !favDrawerOpen || fetched) return;
-    fetch("/api/products", { cache: "no-store" })
+    fetch("/api/catalog", { cache: "no-store" })
       .then((r) => r.json())
-      .then(setFetched)
+      .then((data) => setFetched(data.products))
       .catch(() => {});
   }, [products, favDrawerOpen, fetched]);
 

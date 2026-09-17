@@ -5,16 +5,17 @@ import { createContext, useContext, useState, useCallback, useEffect, ReactNode 
 export interface CartItem {
   id: string;
   name: string;
-  description: string;
   price: number;
   images: string[];
   inStock: boolean;
   quantity: number;
 }
 
+type CartProduct = Omit<CartItem, "quantity">;
+
 interface CartContextType {
   items: CartItem[];
-  addItem: (product: { id: string; name: string; description: string; price: number; images: string[]; inStock: boolean }) => void;
+  addItem: (product: CartProduct) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
@@ -46,7 +47,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [items, loaded]);
 
   const addItem = useCallback(
-    (product: { id: string; name: string; description: string; price: number; images: string[]; inStock: boolean }) => {
+    (product: CartProduct) => {
       setItems((prev) => {
         const existing = prev.find((i) => i.id === product.id);
         if (existing) {
@@ -54,7 +55,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
             i.id === product.id ? { ...i, quantity: i.quantity + 1 } : i
           );
         }
-        return [...prev, { ...product, quantity: 1 }];
+        const { id, name, price, images, inStock } = product;
+        return [...prev, { id, name, price, images, inStock, quantity: 1 }];
       });
     },
     []

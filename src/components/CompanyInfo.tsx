@@ -1,9 +1,11 @@
+import Image from "next/image";
+
 export function CompanyInfo() {
   return (
     <section className="px-4 pt-8 pb-6 max-w-5xl mx-auto">
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
         <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white flex items-center justify-center shrink-0 overflow-hidden border border-neutral-100">
-          <img src="/logo.png" alt="AUTOSHINE.TJ" className="w-full h-full object-contain" />
+          <Image src="/logo.png" alt="AUTOSHINE.TJ" width={96} height={96} preload className="w-full h-full object-contain" />
         </div>
 
         <div className="flex-1 min-w-0">
