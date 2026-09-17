@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { SearchBar } from "./SearchBar";
 import { CategoryFilter } from "./CategoryFilter";
 import { ProductCard } from "./ProductCard";
 import { useFavorites } from "./FavoritesProvider";
+import { CATALOG_STATE_KEY } from "@/lib/nav";
 
 interface Category {
   id: string;
@@ -53,16 +55,41 @@ export function Catalog({ categories, products }: Props) {
   const [search, setSearch] = useState("");
   const [categoryPath, setCategoryPath] = useState<string[]>([]);
   const { isFavorite, showFavOnly } = useFavorites();
-  const [autoOpenId, setAutoOpenId] = useState<string | null>(null);
+  const router = useRouter();
+  const [restored, setRestored] = useState(false);
+  const pendingScroll = useRef<number | null>(null);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const pid = params.get("product");
+    const pid = new URLSearchParams(window.location.search).get("product");
     if (pid) {
-      setAutoOpenId(pid);
-      window.history.replaceState({}, "", window.location.pathname);
+      router.replace(`/product/${encodeURIComponent(pid)}`);
+      return;
     }
-  }, []);
+    try {
+      const saved = JSON.parse(sessionStorage.getItem(CATALOG_STATE_KEY) || "null");
+      if (saved) {
+        setCategoryPath(Array.isArray(saved.categoryPath) ? saved.categoryPath : []);
+        setSearch(typeof saved.search === "string" ? saved.search : "");
+        pendingScroll.current = Number(saved.scrollY) || 0;
+      }
+    } catch {}
+    setRestored(true);
+  }, [router]);
+
+  const saveState = useCallback(() => {
+    try {
+      sessionStorage.setItem(CATALOG_STATE_KEY, JSON.stringify({ categoryPath, search, scrollY: window.scrollY }));
+    } catch {}
+  }, [categoryPath, search]);
+
+  useEffect(() => {
+    if (!restored) return;
+    if (pendingScroll.current !== null) {
+      window.scrollTo(0, pendingScroll.current);
+      pendingScroll.current = null;
+    }
+    saveState();
+  }, [restored, saveState]);
 
   useEffect(() => {
     const handler = () => {
@@ -128,7 +155,7 @@ export function Catalog({ categories, products }: Props) {
       <SearchBar value={search} onChange={setSearch} />
       <CategoryFilter categories={categories} activePath={categoryPath} onNavigate={handleNavigate} />
 
-      <section className="sm:max-w-5xl sm:mx-auto sm:px-4 sm:py-6 py-0">
+      <section onClickCapture={saveState} className="sm:max-w-5xl sm:mx-auto sm:px-4 sm:py-6 py-0">
         {filtered.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-neutral-400 text-sm">
@@ -138,7 +165,7 @@ export function Catalog({ categories, products }: Props) {
         ) : (
           <div className="grid grid-cols-2 gap-[1px] bg-neutral-100 sm:gap-4 sm:bg-transparent sm:grid-cols-3 lg:grid-cols-4">
             {filtered.map((product) => (
-              <ProductCard key={product.id} product={product} autoOpen={autoOpenId === product.id} />
+              <ProductCard key={product.id} product={product} />
             ))}
           </div>
         )}

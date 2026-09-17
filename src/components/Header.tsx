@@ -1,13 +1,22 @@
 "use client";
 
+import { usePathname, useRouter } from "next/navigation";
 import { useCart } from "./CartProvider";
 import { useFavorites } from "./FavoritesProvider";
+import { CATALOG_STATE_KEY } from "@/lib/nav";
 
 export function Header() {
   const { totalItems, setIsOpen } = useCart();
   const { totalFavorites, setFavDrawerOpen, setShowFavOnly } = useFavorites();
+  const pathname = usePathname();
+  const router = useRouter();
 
   const goHome = () => {
+    if (pathname !== "/") {
+      try { sessionStorage.removeItem(CATALOG_STATE_KEY); } catch {}
+      router.push("/");
+      return;
+    }
     setShowFavOnly(false);
     window.dispatchEvent(new CustomEvent("autoshine-go-home"));
     window.scrollTo({ top: 0, behavior: "instant" });
