@@ -19,6 +19,8 @@ export default function AdminPage() {
   const [editProductId, setEditProductId] = useState<string | null>(null);
   const [editProduct, setEditProduct] = useState<Partial<Product> | null>(null);
   const [editOrder, setEditOrder] = useState<Order | null>(null);
+  const [addItemOpen, setAddItemOpen] = useState(false);
+  const [addItemQuery, setAddItemQuery] = useState("");
   const [uploading, setUploading] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [newCatName, setNewCatName] = useState("");
@@ -137,7 +139,26 @@ export default function AdminPage() {
       body: JSON.stringify(editOrder),
     });
     setEditOrder(null);
+    setAddItemOpen(false);
+    setAddItemQuery("");
     loadData();
+  };
+
+  const addProductToOrder = (p: Product) => {
+    if (!editOrder) return;
+    const existing = editOrder.items.findIndex((it) => it.productId === p.id);
+    if (existing >= 0) {
+      const items = [...editOrder.items];
+      items[existing] = { ...items[existing], quantity: items[existing].quantity + 1 };
+      setEditOrder({ ...editOrder, items });
+    } else {
+      setEditOrder({
+        ...editOrder,
+        items: [...editOrder.items, { id: `new-${p.id}`, productId: p.id, name: p.name, price: p.price, quantity: 1, product: { images: p.images } }],
+      });
+    }
+    setAddItemOpen(false);
+    setAddItemQuery("");
   };
 
   const deleteOrder = async (id: string) => {
@@ -497,9 +518,34 @@ export default function AdminPage() {
                                 </div>
                               ))}
                             </div>
+                            {addItemOpen ? (
+                              <div className="rounded-xl border border-neutral-200 p-3 space-y-2">
+                                <div className="flex gap-2">
+                                  <input autoFocus placeholder="Поиск товара по названию" value={addItemQuery} onChange={(e) => setAddItemQuery(e.target.value)} className="flex-1 px-3 py-2 rounded-lg bg-neutral-50 text-sm border-0" />
+                                  <button onClick={() => { setAddItemOpen(false); setAddItemQuery(""); }} className="px-3 py-2 rounded-lg bg-neutral-100 text-xs font-medium">Закрыть</button>
+                                </div>
+                                <div className="max-h-72 overflow-y-auto divide-y divide-neutral-100">
+                                  {products
+                                    .filter((p) => p.name.toLowerCase().includes(addItemQuery.trim().toLowerCase()))
+                                    .slice(0, 50)
+                                    .map((p) => (
+                                      <button key={p.id} onClick={() => addProductToOrder(p)} className="w-full flex items-center gap-3 py-2 text-left hover:bg-neutral-50">
+                                        <div className="w-10 h-10 rounded-lg bg-neutral-50 shrink-0 overflow-hidden">
+                                          {p.images?.[0] && <img src={p.images[0]} alt="" className="w-full h-full object-contain" />}
+                                        </div>
+                                        <span className="flex-1 text-xs">{p.name}</span>
+                                        <span className="text-xs font-semibold shrink-0">{p.price.toLocaleString("ru-RU")} с.</span>
+                                      </button>
+                                    ))}
+                                </div>
+                              </div>
+                            ) : (
+                              <button onClick={() => setAddItemOpen(true)} className="w-full py-2.5 rounded-xl border border-dashed border-neutral-300 text-sm font-medium text-neutral-700">+ Добавить товар</button>
+                            )}
+                            <p className="text-sm font-bold text-right">Итого: {editOrder.items.reduce((s, it) => s + it.price * it.quantity, 0).toLocaleString("ru-RU")} с.</p>
                             <div className="flex gap-2">
                               <button onClick={saveOrder} className="px-4 py-2 rounded-xl bg-neutral-900 text-white text-xs font-medium">Сохранить</button>
-                              <button onClick={() => setEditOrder(null)} className="px-4 py-2 rounded-xl bg-neutral-100 text-xs font-medium">Отмена</button>
+                              <button onClick={() => { setEditOrder(null); setAddItemOpen(false); setAddItemQuery(""); }} className="px-4 py-2 rounded-xl bg-neutral-100 text-xs font-medium">Отмена</button>
                             </div>
                           </div>
                         ) : (
@@ -542,7 +588,7 @@ export default function AdminPage() {
                             </div>
                             <div className="flex items-center justify-between pt-2 border-t border-neutral-50">
                               <div className="flex gap-1.5">
-                                <button onClick={(e) => { e.stopPropagation(); setEditOrder(order); }} className="px-3 py-1.5 rounded-lg bg-neutral-100 text-xs font-medium">Изм.</button>
+                                <button onClick={(e) => { e.stopPropagation(); setEditOrder(order); setAddItemOpen(false); setAddItemQuery(""); }} className="px-3 py-1.5 rounded-lg bg-neutral-100 text-xs font-medium">Изм.</button>
                                 <button onClick={(e) => { e.stopPropagation(); deleteOrder(order.id); }} className="px-3 py-1.5 rounded-lg bg-red-50 text-red-500 text-xs font-medium">Уд.</button>
                               </div>
                               <button onClick={(e) => { e.stopPropagation(); sendOrderWhatsApp(order); }} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#25D366] text-white text-xs font-medium">
