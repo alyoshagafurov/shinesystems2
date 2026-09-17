@@ -5,14 +5,11 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
   if (!(await isAdmin())) return new Response("Unauthorized", { status: 401 });
   const { id } = await params;
   const body = await req.json();
-  const category = await prisma.category.update({
-    where: { id },
-    data: {
-      name: body.name,
-      parentId: body.parentId ?? undefined,
-      order: body.order ?? undefined,
-    },
-  });
+  const data: Record<string, unknown> = {};
+  if (body.name !== undefined) data.name = body.name;
+  if ("parentId" in body) data.parentId = body.parentId || null;
+  if (body.order !== undefined) data.order = body.order;
+  const category = await prisma.category.update({ where: { id }, data });
   return Response.json(category);
 }
 
