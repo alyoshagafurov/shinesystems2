@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { ProductImage } from "@/components/ProductImage";
 
 interface Category { id: string; name: string; slug: string; parentId: string | null; order: number }
 interface Product { id: string; name: string; description: string; composition: string; dilution: string; application: string; precautions: string; storage: string; shelfLife: string; price: number; images: string[]; inStock: boolean; categoryId: string; category?: Category; order: number }
@@ -34,7 +35,7 @@ export default function AdminPage() {
   const dragOverItem = useRef<number | null>(null);
 
   const checkAuth = useCallback(async () => {
-    const res = await fetch("/api/admin/products");
+    const res = await fetch("/api/admin/categories");
     if (res.ok) { setAuthed(true); loadData(); }
   }, []);
 
@@ -267,7 +268,7 @@ export default function AdminPage() {
             <div className="flex flex-wrap gap-2">
               {editProduct.images!.map((url, i) => (
                 <div key={i} className="relative w-20 h-20 rounded-lg overflow-hidden bg-neutral-50 group">
-                  <img src={url} alt="" className="w-full h-full object-cover" />
+                  <ProductImage src={url} alt="" sizes="80px" className="object-cover" />
                   <button type="button" onClick={() => setEditProduct({ ...editProduct, images: editProduct.images!.filter((_, j) => j !== i) })} className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
                 </div>
               ))}
@@ -356,8 +357,8 @@ export default function AdminPage() {
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9" /></svg>
                       </button>
                     </div>
-                    <div className="w-12 h-12 rounded-lg bg-neutral-50 shrink-0 overflow-hidden">
-                      {p.images?.[0] && <img src={p.images[0]} alt="" className="w-full h-full object-cover" />}
+                    <div className="relative w-12 h-12 rounded-lg bg-neutral-50 shrink-0 overflow-hidden">
+                      {p.images?.[0] && <ProductImage src={p.images[0]} alt="" sizes="48px" className="object-cover" />}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium">{p.name}</p>
@@ -530,8 +531,8 @@ export default function AdminPage() {
                                     .slice(0, 50)
                                     .map((p) => (
                                       <button key={p.id} onClick={() => addProductToOrder(p)} className="w-full flex items-center gap-3 py-2 text-left hover:bg-neutral-50">
-                                        <div className="w-10 h-10 rounded-lg bg-neutral-50 shrink-0 overflow-hidden">
-                                          {p.images?.[0] && <img src={p.images[0]} alt="" className="w-full h-full object-contain" />}
+                                        <div className="relative w-10 h-10 rounded-lg bg-neutral-50 shrink-0 overflow-hidden">
+                                          {p.images?.[0] && <ProductImage src={p.images[0]} alt="" sizes="40px" className="object-contain" />}
                                         </div>
                                         <span className="flex-1 text-xs">{p.name}</span>
                                         <span className="text-xs font-semibold shrink-0">{p.price.toLocaleString("ru-RU")} с.</span>
@@ -568,7 +569,11 @@ export default function AdminPage() {
                                       <td className="py-2 pr-2 font-medium">{idx + 1}</td>
                                       <td className="py-2 px-2">
                                         <div className="flex items-center gap-2">
-                                          {item.product?.images?.[0] && <img src={item.product.images[0]} alt="" className="w-8 h-8 rounded object-contain bg-neutral-50 shrink-0" />}
+                                          {item.product?.images?.[0] && (
+                                            <div className="relative w-8 h-8 rounded overflow-hidden bg-neutral-50 shrink-0">
+                                              <ProductImage src={item.product.images[0]} alt="" sizes="32px" className="object-contain" />
+                                            </div>
+                                          )}
                                           <span>{item.name}</span>
                                         </div>
                                       </td>

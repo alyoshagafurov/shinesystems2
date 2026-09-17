@@ -1,4 +1,5 @@
-import { getSearchIndex, jsonResponse } from "@/lib/catalog";
+import { getSearchIndex } from "@/lib/catalog";
+import { jsonResponse } from "@/lib/json-response";
 
 export const dynamic = "force-dynamic";
 

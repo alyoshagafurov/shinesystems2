@@ -2,14 +2,15 @@ import { prisma } from "@/lib/prisma";
 import { isAdmin } from "@/lib/auth";
 import { NextRequest } from "next/server";
 import { revalidatePath } from "next/cache";
+import { jsonResponse } from "@/lib/json-response";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   if (!(await isAdmin())) return Response.json({ error: "Unauthorized" }, { status: 401 });
   const products = await prisma.product.findMany({
     include: { category: true },
     orderBy: { order: "asc" },
   });
-  return Response.json(products);
+  return jsonResponse(request, products);
 }
 
 export async function POST(request: NextRequest) {

@@ -1,5 +1,6 @@
 import { isAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { jsonResponse } from "@/lib/json-response";
 
 function slugify(text: string): string {
   const map: Record<string, string> = {
@@ -17,10 +18,10 @@ function slugify(text: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
-export async function GET() {
+export async function GET(req: Request) {
   if (!(await isAdmin())) return new Response("Unauthorized", { status: 401 });
   const categories = await prisma.category.findMany({ orderBy: { order: "asc" } });
-  return Response.json(categories);
+  return jsonResponse(req, categories);
 }
 
 export async function POST(req: Request) {

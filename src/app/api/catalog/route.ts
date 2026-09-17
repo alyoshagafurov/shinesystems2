@@ -1,4 +1,5 @@
-import { getCatalog, jsonResponse } from "@/lib/catalog";
+import { getCatalog } from "@/lib/catalog";
+import { jsonResponse } from "@/lib/json-response";
 
 export const dynamic = "force-dynamic";
 
