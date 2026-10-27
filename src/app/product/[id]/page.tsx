@@ -37,7 +37,6 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   const similar = await prisma.product.findMany({
     where: { categoryId: product.categoryId, id: { not: product.id } },
     orderBy: { order: "asc" },
-    take: 20,
     select: { id: true, name: true, price: true, images: true, inStock: true },
   });
 
@@ -63,9 +62,9 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
       />
 
       {similar.length > 0 && (
-        <section className="mt-8 border-t border-neutral-100 sm:max-w-5xl sm:mx-auto sm:px-4 sm:border-0">
+        <section className="mt-8 border-t border-neutral-100 sm:px-4 sm:border-0">
           <h2 className="px-4 sm:px-0 py-4 text-lg font-bold">Похожие товары</h2>
-          <div className="grid grid-cols-2 gap-[1px] bg-neutral-100 sm:gap-4 sm:bg-transparent sm:grid-cols-3 lg:grid-cols-4 sm:pb-8">
+          <div className="grid grid-cols-2 gap-[1px] bg-neutral-100 sm:gap-4 sm:bg-transparent sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 sm:pb-8">
             {similar.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}

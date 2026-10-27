@@ -8,7 +8,7 @@ interface Props {
 export function SearchBar({ value, onChange }: Props) {
   return (
     <div className="sticky top-14 z-40 bg-white/95 backdrop-blur-sm border-b border-neutral-100">
-      <div className="max-w-5xl mx-auto px-4 py-3">
+      <div className="px-4 py-3">
         <div className="relative">
           <svg
             className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400"

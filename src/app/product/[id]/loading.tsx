@@ -2,7 +2,7 @@ export default function Loading() {
   return (
     <div className="animate-pulse">
       <div className="h-14 border-b border-neutral-100" />
-      <div className="sm:max-w-5xl sm:mx-auto sm:px-4">
+      <div className="sm:max-w-3xl sm:mx-auto sm:px-4">
         <div className="h-12" />
         <div className="sm:grid sm:grid-cols-2 sm:gap-8">
           <div className="w-full aspect-square bg-neutral-100 sm:rounded-2xl" />

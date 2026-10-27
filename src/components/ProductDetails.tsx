@@ -59,7 +59,7 @@ export function ProductDetails({ product, categoryName }: { product: ProductFull
   };
 
   return (
-    <div className="sm:max-w-5xl sm:mx-auto sm:px-4">
+    <div className="sm:max-w-3xl sm:mx-auto sm:px-4">
       <div className="flex items-center gap-2 px-4 sm:px-0 h-12">
         <button onClick={goBack} className="flex items-center gap-1 -ml-1 pr-2 py-2 text-sm font-medium text-neutral-700">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

@@ -22,6 +22,7 @@ export default function AdminPage() {
   const [editOrder, setEditOrder] = useState<Order | null>(null);
   const [addItemOpen, setAddItemOpen] = useState(false);
   const [addItemQuery, setAddItemQuery] = useState("");
+  const [addItemCatPath, setAddItemCatPath] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [newCatName, setNewCatName] = useState("");
@@ -522,14 +523,50 @@ export default function AdminPage() {
                             {addItemOpen ? (
                               <div className="rounded-xl border border-neutral-200 p-3 space-y-2">
                                 <div className="flex gap-2">
-                                  <input autoFocus placeholder="Поиск товара по названию" value={addItemQuery} onChange={(e) => setAddItemQuery(e.target.value)} className="flex-1 px-3 py-2 rounded-lg bg-neutral-50 text-sm border-0" />
-                                  <button onClick={() => { setAddItemOpen(false); setAddItemQuery(""); }} className="px-3 py-2 rounded-lg bg-neutral-100 text-xs font-medium">Закрыть</button>
+                                  <input autoFocus placeholder="Поиск товара..." value={addItemQuery} onChange={(e) => setAddItemQuery(e.target.value)} className="flex-1 px-3 py-2 rounded-lg bg-neutral-50 text-sm border-0" />
+                                  <button onClick={() => { setAddItemOpen(false); setAddItemQuery(""); setAddItemCatPath([]); }} className="px-3 py-2 rounded-lg bg-neutral-100 text-xs font-medium">Закрыть</button>
                                 </div>
+                                {!addItemQuery.trim() && (
+                                  <div className="flex flex-wrap gap-1.5 pb-1">
+                                    {addItemCatPath.length > 0 && (
+                                      <button onClick={() => setAddItemCatPath(addItemCatPath.slice(0, -1))} className="px-2.5 py-1.5 rounded-lg bg-neutral-900 text-white text-xs font-medium">← Назад</button>
+                                    )}
+                                    {(() => {
+                                      const parentId = addItemCatPath.length > 0 ? addItemCatPath[addItemCatPath.length - 1] : null;
+                                      const children = categories.filter((c) => c.parentId === parentId);
+                                      return children.map((c) => (
+                                        <button key={c.id} onClick={() => setAddItemCatPath([...addItemCatPath, c.id])} className={`px-2.5 py-1.5 rounded-lg text-xs font-medium ${addItemCatPath.includes(c.id) ? "bg-neutral-900 text-white" : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200"}`}>
+                                          {c.name} {categories.some((ch) => ch.parentId === c.id) ? "→" : ""}
+                                        </button>
+                                      ));
+                                    })()}
+                                  </div>
+                                )}
                                 <div className="max-h-72 overflow-y-auto divide-y divide-neutral-100">
-                                  {products
-                                    .filter((p) => p.name.toLowerCase().includes(addItemQuery.trim().toLowerCase()))
-                                    .slice(0, 50)
-                                    .map((p) => (
+                                  {(() => {
+                                    const q = addItemQuery.trim().toLowerCase();
+                                    let filtered = products;
+                                    if (q) {
+                                      filtered = products.filter((p) => p.name.toLowerCase().includes(q));
+                                    } else if (addItemCatPath.length > 0) {
+                                      const activeCat = addItemCatPath[addItemCatPath.length - 1];
+                                      const hasChildren = categories.some((c) => c.parentId === activeCat);
+                                      if (!hasChildren) {
+                                        filtered = products.filter((p) => p.categoryId === activeCat);
+                                      } else {
+                                        const descIds = new Set<string>();
+                                        const queue = [activeCat];
+                                        while (queue.length > 0) {
+                                          const pid = queue.shift()!;
+                                          for (const c of categories) {
+                                            if (c.parentId === pid && !descIds.has(c.id)) { descIds.add(c.id); queue.push(c.id); }
+                                          }
+                                        }
+                                        descIds.add(activeCat);
+                                        filtered = products.filter((p) => descIds.has(p.categoryId));
+                                      }
+                                    }
+                                    return filtered.map((p) => (
                                       <button key={p.id} onClick={() => addProductToOrder(p)} className="w-full flex items-center gap-3 py-2 text-left hover:bg-neutral-50">
                                         <div className="relative w-10 h-10 rounded-lg bg-neutral-50 shrink-0 overflow-hidden">
                                           {p.images?.[0] && <ProductImage src={p.images[0]} alt="" sizes="40px" className="object-contain" />}
@@ -537,11 +574,12 @@ export default function AdminPage() {
                                         <span className="flex-1 text-xs">{p.name}</span>
                                         <span className="text-xs font-semibold shrink-0">{p.price.toLocaleString("ru-RU")} с.</span>
                                       </button>
-                                    ))}
+                                    ));
+                                  })()}
                                 </div>
                               </div>
                             ) : (
-                              <button onClick={() => setAddItemOpen(true)} className="w-full py-2.5 rounded-xl border border-dashed border-neutral-300 text-sm font-medium text-neutral-700">+ Добавить товар</button>
+                              <button onClick={() => { setAddItemOpen(true); setAddItemCatPath([]); }} className="w-full py-2.5 rounded-xl border border-dashed border-neutral-300 text-sm font-medium text-neutral-700">+ Добавить товар</button>
                             )}
                             <p className="text-sm font-bold text-right">Итого: {editOrder.items.reduce((s, it) => s + it.price * it.quantity, 0).toLocaleString("ru-RU")} с.</p>
                             <div className="flex gap-2">

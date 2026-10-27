@@ -35,7 +35,7 @@ export function CategoryFilter({ categories, activePath, onNavigate }: Props) {
   if (children.length === 0 && activePath.length === 0) return null;
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-3">
+    <div className="px-4 py-3">
       {activePath.length > 0 && (
         <div className="flex items-center gap-1 mb-2 flex-wrap text-xs">
           <button
