@@ -34,8 +34,19 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   const product = await getProduct(id);
   if (!product) notFound();
 
+  const category = await prisma.category.findUnique({
+    where: { id: product.categoryId },
+    select: { id: true, parentId: true },
+  });
+  const rootCatId = category?.parentId ?? product.categoryId;
+  const siblingCats = await prisma.category.findMany({
+    where: { parentId: rootCatId },
+    select: { id: true },
+  });
+  const allCatIds = [rootCatId, ...siblingCats.map((c) => c.id)];
+
   const similar = await prisma.product.findMany({
-    where: { categoryId: product.categoryId, id: { not: product.id } },
+    where: { categoryId: { in: allCatIds }, id: { not: product.id } },
     orderBy: { order: "asc" },
     select: { id: true, name: true, price: true, images: true, inStock: true },
   });
